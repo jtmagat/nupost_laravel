@@ -19,6 +19,13 @@ class RequestManagementController extends Controller
         $filter = $request->input('filter', 'all');
         $sort   = $request->input('sort', 'newest');
 
+        // Stat counts
+        $pending  = PostRequest::where('status', 'Pending Review')->count();
+        $review   = PostRequest::where('status', 'Under Review')->count();
+        $approved = PostRequest::where('status', 'Approved')->count();
+        $posted   = PostRequest::where('status', 'Posted')->count();
+        $rejected = PostRequest::where('status', 'Rejected')->count();
+
         $query = PostRequest::query();
 
         if ($filter !== 'all') {
@@ -53,7 +60,10 @@ class RequestManagementController extends Controller
         $requests = $query->get();
         $total    = $requests->count();
 
-        return view('admin.requests', compact('requests', 'total', 'search', 'filter', 'sort'));
+        return view('admin.requests', compact(
+            'requests', 'total', 'search', 'filter', 'sort',
+            'pending', 'review', 'approved', 'posted', 'rejected'
+        ));
     }
 
     public function show($id)
@@ -73,12 +83,12 @@ class RequestManagementController extends Controller
 
         $allowed = ['Pending Review', 'Under Review', 'Approved', 'Posted', 'Rejected'];
         if (!in_array($new_status, $allowed)) {
-            return response()->json(['success' => false, 'message' => 'Invalid status.']);
+            return back()->with('error', 'Invalid status.');
         }
 
         $req = PostRequest::find($id);
         if (!$req) {
-            return response()->json(['success' => false, 'message' => 'Request not found.']);
+            return back()->with('error', 'Request not found.');
         }
 
         $old_status = $req->status;
@@ -126,7 +136,7 @@ class RequestManagementController extends Controller
             }
         }
 
-        return response()->json(['success' => true, 'message' => "Status updated to $new_status."]);
+        return back()->with('success', "Status updated to $new_status.");
     }
 
     public function postComment(Request $request)
@@ -184,36 +194,36 @@ class RequestManagementController extends Controller
     }
 
     private function getNotifData(string $status, string $title, string $note = ''): array
-    {
-        $note_suffix = $note ? " Admin note: $note" : '';
-        return match($status) {
-            'Under Review' => [
-                'title'   => 'Request Under Review',
-                'message' => "Your request \"$title\" is now being reviewed by our team.$note_suffix",
-                'type'    => 'review',
-            ],
-            'Approved' => [
-                'title'   => 'Request Approved! 🎉',
-                'message' => "Great news! Your request \"$title\" has been approved and is ready for posting.$note_suffix",
-                'type'    => 'approved',
-            ],
-            'Posted' => [
-                'title'   => 'Request Posted! 🚀',
-                'message' => "Your request \"$title\" has been successfully published on the platform.$note_suffix",
-                'type'    => 'posted',
-            ],
-            'Rejected' => [
-                'title'   => 'Request Rejected',
-                'message' => "Unfortunately, your request \"$title\" was not approved. You may submit a revised one.$note_suffix",
-                'type'    => 'rejected',
-            ],
-            default => [
-                'title'   => 'Request Status Updated',
-                'message' => "Your request \"$title\" status has been updated to $status.$note_suffix",
-                'type'    => 'review',
-            ],
-        };
-    }
+{
+    $note_suffix = $note ? " Admin note: $note" : '';
+    return match($status) {
+        'Under Review' => [
+            'title'   => 'Request Under Review',
+            'message' => "Your request \"$title\" is now being reviewed by our team.$note_suffix",
+            'type'    => 'review',
+        ],
+        'Approved' => [
+            'title'   => 'Request Approved! 🎉',
+            'message' => "Great news! Your request \"$title\" has been approved and is ready for posting.$note_suffix",
+            'type'    => 'approved',
+        ],
+        'Posted' => [
+            'title'   => 'Request Posted! 🚀',
+            'message' => "Your request \"$title\" has been successfully published on the platform.$note_suffix",
+            'type'    => 'posted',
+        ],
+        'Rejected' => [
+            'title'   => 'Request Rejected',
+            'message' => "Unfortunately, your request \"$title\" was not approved. You may submit a revised one.$note_suffix",
+            'type'    => 'rejected',
+        ],
+        default => [
+            'title'   => 'Request Status Updated',
+            'message' => "Your request \"$title\" status has been updated to $status.$note_suffix",
+            'type'    => 'review',
+        ],
+    };
+}
 
     private function getStatusEmailHtml(string $name, string $title, string $status, string $note = ''): string
     {
