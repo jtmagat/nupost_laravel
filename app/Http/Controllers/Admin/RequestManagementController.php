@@ -10,9 +10,12 @@ use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RequestManagementController extends Controller
 {
+    // ── LIST ALL REQUESTS ────────────────────────────────────────
     public function index(Request $request)
     {
         $search = trim($request->input('search', ''));
@@ -66,15 +69,20 @@ class RequestManagementController extends Controller
         ));
     }
 
+    // ── SHOW REQUEST DETAIL ──────────────────────────────────────
     public function show($id)
     {
         $req        = PostRequest::findOrFail($id);
         $comments   = RequestComment::where('request_id', $id)->orderBy('created_at', 'asc')->get();
         $activities = RequestActivity::where('request_id', $id)->orderBy('created_at', 'desc')->get();
 
-        return view('admin.request_info', compact('req', 'comments', 'activities'));
+        // Para sa backward compatibility sa blade view mo
+        $request = $req; 
+
+        return view('admin.request_info', compact('req', 'request', 'comments', 'activities'));
     }
 
+    // ── UPDATE STATUS ───────────────────────────────────────────
     public function updateStatus(Request $request)
     {
         $id         = $request->input('request_id');
@@ -94,7 +102,6 @@ class RequestManagementController extends Controller
         $old_status = $req->status;
         $req->update(['status' => $new_status]);
 
-        // Log activity
         RequestActivity::create([
             'request_id' => $id,
             'actor'      => 'admin@nupost.com',
@@ -109,7 +116,6 @@ class RequestManagementController extends Controller
             ]);
         }
 
-        // Send notification to requestor
         $user = User::where('name', $req->requester)->first();
         if ($user) {
             $notif_data = $this->getNotifData($new_status, $req->title, $note);
@@ -121,7 +127,6 @@ class RequestManagementController extends Controller
                 'is_read' => false,
             ]);
 
-            // Email notification
             if ($user->email_notif && $user->status_updates) {
                 try {
                     $html = $this->getStatusEmailHtml($user->name, $req->title, $new_status, $note);
@@ -131,7 +136,7 @@ class RequestManagementController extends Controller
                             ->html($html);
                     });
                 } catch (\Exception $e) {
-                    \Log::error('[NUPost] Status email failed: ' . $e->getMessage());
+                    Log::error('[NUPost] Status email failed: ' . $e->getMessage());
                 }
             }
         }
@@ -139,6 +144,77 @@ class RequestManagementController extends Controller
         return back()->with('success', "Status updated to $new_status.");
     }
 
+    // ── AI CAPTION GENERATION (GEMINI) ───────────────────────────
+    public function generateCaption(Request $httpRequest, $id)
+    {
+        $postRequest = PostRequest::findOrFail($id);
+
+        $userPrompt  = $httpRequest->input('prompt', '');
+        $title       = $httpRequest->input('title', $postRequest->title);
+        $description = $httpRequest->input('description', $postRequest->description ?? '');
+
+        $apiKey = config('services.gemini.key');
+        if (!$apiKey) {
+            return response()->json(['error' => 'Gemini API key not configured. Add GEMINI_API_KEY to .env'], 500);
+        }
+
+        $basePrompt = "Write a compelling social media caption for a post with the following details:\n"
+            . "Title: {$title}\n"
+            . ($description ? "Description: {$description}\n" : '')
+            . ($postRequest->category ? "Category: {$postRequest->category}\n" : '')
+            . "Make it engaging, concise (2-4 sentences), and suitable for social media platforms like Facebook or Instagram.\n"
+            . "Include 3-5 relevant hashtags at the end.\n";
+
+        if ($userPrompt) {
+            $basePrompt .= "Additional instruction: {$userPrompt}\n";
+        }
+
+        $basePrompt .= "Return ONLY the caption text with hashtags. No explanations, no quotes.";
+
+        try {
+            $response = Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={$apiKey}", [
+                'contents' => [
+                    [
+                        'parts' => [['text' => $basePrompt]]
+                    ]
+                ],
+                'generationConfig' => [
+                    'temperature'     => 0.9,
+                    'maxOutputTokens' => 300,
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $data    = $response->json();
+                $caption = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
+                if ($caption) {
+                    return response()->json(['caption' => trim($caption)]);
+                }
+            }
+
+            return response()->json(['error' => 'Gemini returned no caption. Try again.'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to connect to Gemini: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // ── SAVE AI CAPTION ──────────────────────────────────────────
+    public function saveCaption(Request $httpRequest, $id)
+    {
+        $postRequest = PostRequest::findOrFail($id);
+        $filename    = $httpRequest->input('filename', 'default');
+        $caption     = $httpRequest->input('caption', '');
+
+        $captions = json_decode($postRequest->ai_captions ?? '{}', true) ?: [];
+        $captions[$filename] = $caption;
+
+        $postRequest->ai_captions = json_encode($captions);
+        $postRequest->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    // ── COMMENTS MANAGEMENT ──────────────────────────────────────
     public function postComment(Request $request)
     {
         $id      = $request->input('request_id');
@@ -160,7 +236,6 @@ class RequestManagementController extends Controller
             'message'     => $message,
         ]);
 
-        // Notify requestor
         $user = User::where('name', $req->requester)->first();
         if ($user) {
             Notification::create([
@@ -193,37 +268,44 @@ class RequestManagementController extends Controller
         return response()->json(['comments' => $comments]);
     }
 
+    // ── CALENDAR ────────────────────────────────────────────────
+    public function calendar(Request $request)
+    {
+        return view('admin.calendar');
+    }
+
+    // ── PRIVATE HELPERS ──────────────────────────────────────────
     private function getNotifData(string $status, string $title, string $note = ''): array
-{
-    $note_suffix = $note ? " Admin note: $note" : '';
-    return match($status) {
-        'Under Review' => [
-            'title'   => 'Request Under Review',
-            'message' => "Your request \"$title\" is now being reviewed by our team.$note_suffix",
-            'type'    => 'review',
-        ],
-        'Approved' => [
-            'title'   => 'Request Approved! 🎉',
-            'message' => "Great news! Your request \"$title\" has been approved and is ready for posting.$note_suffix",
-            'type'    => 'approved',
-        ],
-        'Posted' => [
-            'title'   => 'Request Posted! 🚀',
-            'message' => "Your request \"$title\" has been successfully published on the platform.$note_suffix",
-            'type'    => 'posted',
-        ],
-        'Rejected' => [
-            'title'   => 'Request Rejected',
-            'message' => "Unfortunately, your request \"$title\" was not approved. You may submit a revised one.$note_suffix",
-            'type'    => 'rejected',
-        ],
-        default => [
-            'title'   => 'Request Status Updated',
-            'message' => "Your request \"$title\" status has been updated to $status.$note_suffix",
-            'type'    => 'review',
-        ],
-    };
-}
+    {
+        $note_suffix = $note ? " Admin note: $note" : '';
+        return match($status) {
+            'Under Review' => [
+                'title'   => 'Request Under Review',
+                'message' => "Your request \"$title\" is now being reviewed by our team.$note_suffix",
+                'type'    => 'review',
+            ],
+            'Approved' => [
+                'title'   => 'Request Approved! 🎉',
+                'message' => "Great news! Your request \"$title\" has been approved and is ready for posting.$note_suffix",
+                'type'    => 'approved',
+            ],
+            'Posted' => [
+                'title'   => 'Request Posted! 🚀',
+                'message' => "Your request \"$title\" has been successfully published on the platform.$note_suffix",
+                'type'    => 'posted',
+            ],
+            'Rejected' => [
+                'title'   => 'Request Rejected',
+                'message' => "Unfortunately, your request \"$title\" was not approved. You may submit a revised one.$note_suffix",
+                'type'    => 'rejected',
+            ],
+            default => [
+                'title'   => 'Request Status Updated',
+                'message' => "Your request \"$title\" status has been updated to $status.$note_suffix",
+                'type'    => 'review',
+            ],
+        };
+    }
 
     private function getStatusEmailHtml(string $name, string $title, string $status, string $note = ''): string
     {

@@ -62,8 +62,7 @@ class RequestController extends Controller
 
     public function store(Request $request)
     {
-        $user_name = session('name');
-
+        $user_name   = session('name');
         $title       = trim($request->input('title', ''));
         $description = trim($request->input('description', ''));
         $category    = trim($request->input('category', ''));
@@ -111,10 +110,95 @@ class RequestController extends Controller
         return back()->with('success', 'Request submitted successfully!');
     }
 
-    public function chat(Request $request, $id)
+    public function edit($id)
+    {
+        $user_name    = session('name');
+        $req          = PostRequest::where('id', $id)
+                            ->where('requester', $user_name)
+                            ->where('status', 'Pending Review')
+                            ->firstOrFail();
+        $unread_count = $this->getUnreadCount();
+        return view('requestor.edit_request', compact('req', 'unread_count'));
+    }
+
+    public function update(Request $request, $id)
     {
         $user_name = session('name');
-        $req       = PostRequest::where('id', $id)->where('requester', $user_name)->firstOrFail();
+        $req       = PostRequest::where('id', $id)
+                        ->where('requester', $user_name)
+                        ->where('status', 'Pending Review')
+                        ->firstOrFail();
+
+        $title       = trim($request->input('title', ''));
+        $description = trim($request->input('description', ''));
+        $category    = trim($request->input('category', ''));
+        $priority    = trim($request->input('priority', ''));
+        $post_date   = trim($request->input('post_date', ''));
+        $caption     = trim($request->input('caption', ''));
+        $platforms   = $request->input('platforms', []);
+
+        if (!$title || !$description || !$category || !$priority) {
+            return back()->withInput()->with('error', 'Please fill in all required fields.');
+        }
+
+        $data = [
+            'title'          => $title,
+            'description'    => $description,
+            'category'       => $category,
+            'priority'       => $priority,
+            'caption'        => $caption,
+            'platform'       => implode(',', $platforms),
+            'preferred_date' => $post_date ?: null,
+        ];
+
+        // Handle new media upload
+        if ($request->hasFile('media')) {
+            $upload_dir    = public_path('uploads');
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime'];
+            $max_size      = 10 * 1024 * 1024;
+            $uploaded      = [];
+
+            foreach (array_slice($request->file('media'), 0, 4) as $file) {
+                if (!$file->isValid()) continue;
+                if ($file->getSize() > $max_size) continue;
+                if (!in_array($file->getMimeType(), $allowed_types)) continue;
+                $filename  = 'media_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move($upload_dir, $filename);
+                $uploaded[] = $filename;
+            }
+            if (!empty($uploaded)) {
+                $data['media_file'] = implode(',', $uploaded);
+            }
+        }
+
+        $req->update($data);
+        return redirect()->route('requestor.requests')->with('success', 'Request updated successfully!');
+    }
+
+    public function destroy($id)
+    {
+        $user_name = session('name');
+        $req       = PostRequest::where('id', $id)
+                        ->where('requester', $user_name)
+                        ->where('status', 'Pending Review')
+                        ->firstOrFail();
+
+        // Delete media files
+        if ($req->media_file) {
+            foreach ($req->media_files as $file) {
+                $path = public_path('uploads/' . $file);
+                if (file_exists($path)) unlink($path);
+            }
+        }
+
+        $req->delete();
+        return redirect()->route('requestor.requests')->with('success', 'Request deleted successfully!');
+    }
+
+    public function chat(Request $request, $id)
+    {
+        $user_name     = session('name');
+        $req           = PostRequest::where('id', $id)->where('requester', $user_name)->firstOrFail();
         $chat_messages = RequestComment::where('request_id', $id)->orderBy('created_at', 'asc')->get();
         $unread_count  = $this->getUnreadCount();
 
@@ -144,8 +228,8 @@ class RequestController extends Controller
         $user_name = session('name');
         $user_id   = session('user_id');
 
-        $month = (int)($request->input('month', date('n')));
-        $year  = (int)($request->input('year',  date('Y')));
+        $month     = (int)($request->input('month', date('n')));
+        $year      = (int)($request->input('year',  date('Y')));
         $is_public = (bool)session('cal_public', false);
 
         if ($request->has('toggle_public')) {
@@ -159,9 +243,9 @@ class RequestController extends Controller
         if ($month > 12) { $month = 1;  $year++; }
 
         $prev_month = $month - 1; $prev_year = $year;
-        if ($prev_month < 1) { $prev_month = 12; $prev_year--; }
+        if ($prev_month < 1)  { $prev_month = 12; $prev_year--; }
         $next_month = $month + 1; $next_year = $year;
-        if ($next_month > 12) { $next_month = 1; $next_year++; }
+        if ($next_month > 12) { $next_month = 1;  $next_year++; }
 
         if ($is_public) {
             $all_events = PostRequest::whereNotNull('preferred_date')
@@ -185,8 +269,8 @@ class RequestController extends Controller
             $events[$day][] = $ev;
         }
 
-        $today     = now()->format('Y-m-d');
-        $in7days   = now()->addDays(7)->format('Y-m-d');
+        $today   = now()->format('Y-m-d');
+        $in7days = now()->addDays(7)->format('Y-m-d');
 
         if ($is_public) {
             $upcoming = PostRequest::whereNotNull('preferred_date')
@@ -206,14 +290,14 @@ class RequestController extends Controller
                 ->map(function ($r) { $r->is_mine = true; return $r; });
         }
 
-        $unread_count   = $this->getUnreadCount();
-        $today_day      = (int)date('j');
-        $today_month    = (int)date('n');
-        $today_year     = (int)date('Y');
-        $first_day      = (int)date('w', mktime(0,0,0,$month,1,$year));
-        $days_in_month  = (int)date('t', mktime(0,0,0,$month,1,$year));
-        $days_in_prev   = (int)date('t', mktime(0,0,0,$prev_month,1,$prev_year));
-        $month_name     = date('F Y', mktime(0,0,0,$month,1,$year));
+        $unread_count  = $this->getUnreadCount();
+        $today_day     = (int)date('j');
+        $today_month   = (int)date('n');
+        $today_year    = (int)date('Y');
+        $first_day     = (int)date('w', mktime(0, 0, 0, $month, 1, $year));
+        $days_in_month = (int)date('t', mktime(0, 0, 0, $month, 1, $year));
+        $days_in_prev  = (int)date('t', mktime(0, 0, 0, $prev_month, 1, $prev_year));
+        $month_name    = date('F Y', mktime(0, 0, 0, $month, 1, $year));
 
         return view('requestor.calendar', compact(
             'events', 'upcoming', 'month', 'year', 'month_name',
