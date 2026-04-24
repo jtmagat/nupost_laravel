@@ -37,9 +37,7 @@
     margin-bottom: 10px; line-height: 1.15;
 }
 .create-hero h1 span { color: #001a6e; }
-.create-hero p {
-    font-size: 14px; color: var(--text-muted); line-height: 1.65;
-}
+.create-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.65; }
 
 /* ── ALERTS ─────────────────────────── */
 .alert { padding: 12px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; font-weight: 500; width: 100%; max-width: 680px; }
@@ -47,36 +45,21 @@
 .alert--error   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
 /* ── FORM WRAPPER ───────────────────── */
-.form-body {
-    width: 100%; max-width: 680px;
-    display: flex; flex-direction: column; gap: 16px;
-}
+.form-body { width: 100%; max-width: 680px; display: flex; flex-direction: column; gap: 16px; }
 
 /* ── SECTION CARD ───────────────────── */
 .form-section {
-    background: white;
-    border-radius: 18px;
-    border: 1.5px solid var(--border);
-    padding: 26px 28px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    transition: box-shadow .2s;
+    background: white; border-radius: 18px;
+    border: 1.5px solid var(--border); padding: 26px 28px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow .2s;
 }
-.form-section:focus-within {
-    box-shadow: 0 4px 20px rgba(59,110,245,0.08);
-    border-color: rgba(59,110,245,0.25);
-}
-
+.form-section:focus-within { box-shadow: 0 4px 20px rgba(59,110,245,0.08); border-color: rgba(59,110,245,0.25); }
 .section-title {
     display: flex; align-items: center; gap: 10px;
     font-size: 13.5px; font-weight: 700; color: var(--text);
-    margin-bottom: 20px; padding-bottom: 14px;
-    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1.5px solid var(--border);
 }
-.section-title__icon {
-    width: 32px; height: 32px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
+.section-title__icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .section-title__icon--blue   { background: #dbeafe; color: #2563eb; }
 .section-title__icon--purple { background: #ede9fe; color: #7c3aed; }
 .section-title__icon--teal   { background: #d1fae5; color: #059669; }
@@ -85,66 +68,42 @@
 /* ── FIELDS ─────────────────────────── */
 .field { margin-bottom: 16px; }
 .field:last-child { margin-bottom: 0; }
-.field label {
-    display: block;
-    font-size: 11.5px; font-weight: 700;
-    color: var(--text-muted); margin-bottom: 7px;
-    letter-spacing: 0.3px; text-transform: uppercase;
-}
+.field label { display: block; font-size: 11.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 7px; letter-spacing: 0.3px; text-transform: uppercase; }
 .field label .req { color: #ef4444; margin-left: 2px; }
 .field label .opt { color: var(--text-faint); font-weight: 400; text-transform: none; font-size: 11px; }
-
 .field input[type="text"],
 .field input[type="date"],
 .field select,
 .field textarea {
-    width: 100%;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    padding: 11px 14px;
-    font-size: 13.5px; font-family: var(--font);
+    width: 100%; border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 11px 14px; font-size: 13.5px; font-family: var(--font);
     color: var(--text); background: #fafbfd;
     outline: none; transition: border-color .15s, background .15s, box-shadow .15s;
 }
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-    border-color: #3b6ef5;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(59,110,245,0.08);
+.field input:focus, .field select:focus, .field textarea:focus {
+    border-color: #3b6ef5; background: white; box-shadow: 0 0 0 3px rgba(59,110,245,0.08);
 }
 .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
-.field input::placeholder,
-.field textarea::placeholder { color: #c8cdd8; }
+.field input::placeholder, .field textarea::placeholder { color: #c8cdd8; }
 .field select { appearance: none; cursor: pointer; }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
 /* ── PLATFORM BUTTONS ───────────────── */
 .platform-group { display: flex; gap: 8px; flex-wrap: wrap; }
 .platform-btn {
-    padding: 8px 16px; border-radius: 10px;
-    border: 1.5px solid var(--border);
+    padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border);
     font-size: 12.5px; font-weight: 500; cursor: pointer;
     background: #fafbfd; color: var(--text-muted);
     font-family: var(--font); transition: all .15s;
     display: flex; align-items: center; gap: 7px;
 }
-.platform-btn:hover:not(.selected) {
-    border-color: #93c5fd; color: var(--text); background: #eff6ff;
-}
-.platform-btn.selected {
-    background: #001a6e; color: white;
-    border-color: #001a6e;
-    box-shadow: 0 2px 8px rgba(0,26,110,0.2);
-}
-.platform-btn .picon { font-size: 15px; }
+.platform-btn:hover:not(.selected) { border-color: #93c5fd; color: var(--text); background: #eff6ff; }
+.platform-btn.selected { background: #001a6e; color: white; border-color: #001a6e; box-shadow: 0 2px 8px rgba(0,26,110,0.2); }
 
 /* ── MEDIA UPLOAD ───────────────────── */
 .upload-area { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; }
 .upload-box {
-    width: 82px; height: 82px;
-    border: 2px dashed #cbd5e1;
-    border-radius: 12px;
+    width: 82px; height: 82px; border: 2px dashed #cbd5e1; border-radius: 12px;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     cursor: pointer; color: var(--text-faint); font-size: 11px; gap: 5px;
     transition: all .15s; background: #fafbfd;
@@ -165,28 +124,14 @@
 /* ── AI SECTION ─────────────────────── */
 .ai-section {
     background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%);
-    border: 1.5px solid rgba(109,40,217,0.2);
-    border-radius: 18px;
-    padding: 22px 28px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1.5px solid rgba(109,40,217,0.2); border-radius: 18px;
+    padding: 22px 28px; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
-.ai-header {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 14px;
-}
-.ai-title {
-    display: flex; align-items: center; gap: 9px;
-    font-size: 13.5px; font-weight: 700; color: #5b21b6;
-}
-.ai-badge {
-    font-size: 9.5px; font-weight: 700; letter-spacing: 0.5px;
-    padding: 2px 8px; border-radius: 20px;
-    background: rgba(109,40,217,0.12); color: #7c3aed;
-    border: 1px solid rgba(109,40,217,0.2);
-}
+.ai-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.ai-title { display: flex; align-items: center; gap: 9px; font-size: 13.5px; font-weight: 700; color: #5b21b6; }
+.ai-badge { font-size: 9.5px; font-weight: 700; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 20px; background: rgba(109,40,217,0.12); color: #7c3aed; border: 1px solid rgba(109,40,217,0.2); }
 .ai-generate-btn {
-    display: flex; align-items: center; gap: 7px;
-    padding: 9px 18px;
+    display: flex; align-items: center; gap: 7px; padding: 9px 18px;
     background: #5b21b6; color: white; border: none; border-radius: 10px;
     font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: var(--font);
     transition: all .15s; box-shadow: 0 2px 8px rgba(91,33,182,0.3);
@@ -195,42 +140,45 @@
 .ai-generate-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .ai-hint { font-size: 12px; color: #7c3aed; margin-bottom: 10px; opacity: 0.75; }
 .ai-textarea {
-    width: 100%; border: 1.5px solid rgba(109,40,217,0.2);
-    border-radius: 12px; padding: 12px 14px;
-    font-size: 13.5px; font-family: var(--font);
+    width: 100%; border: 1.5px solid rgba(109,40,217,0.2); border-radius: 12px;
+    padding: 12px 14px; font-size: 13.5px; font-family: var(--font);
     background: rgba(255,255,255,0.7); color: var(--text);
-    outline: none; resize: vertical; min-height: 100px;
+    outline: none; resize: vertical; min-height: 140px;
     transition: border-color .15s, box-shadow .15s; line-height: 1.6;
 }
-.ai-textarea:focus {
-    border-color: #8b5cf6; background: white;
-    box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
-}
+.ai-textarea:focus { border-color: #8b5cf6; background: white; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
 .ai-textarea::placeholder { color: #c4b5fd; }
+
+/* Fixed footer preview */
+.ai-footer-preview {
+    margin-top: 10px; padding: 12px 14px;
+    background: rgba(91,33,182,0.05);
+    border: 1px dashed rgba(91,33,182,0.2);
+    border-radius: 10px; font-size: 12px; color: #5b21b6; line-height: 1.7;
+}
+.ai-footer-preview__label {
+    display: block; font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px;
+    text-transform: uppercase; color: #7c3aed; opacity: 0.65; margin-bottom: 6px;
+}
 
 /* ── FORM ACTIONS ───────────────────── */
 .form-actions {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 28px;
-    background: white; border-radius: 18px;
-    border: 1.5px solid var(--border);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    padding: 20px 28px; background: white; border-radius: 18px;
+    border: 1.5px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .form-actions__left { font-size: 12px; color: var(--text-faint); }
 .form-actions__left span { color: #ef4444; }
 .actions-right { display: flex; gap: 10px; }
 .btn-cancel {
-    padding: 10px 24px; border-radius: 10px;
-    border: 1.5px solid var(--border); background: white;
-    font-size: 13.5px; font-weight: 600; cursor: pointer;
-    color: var(--text-muted); font-family: var(--font);
-    transition: all .15s;
+    padding: 10px 24px; border-radius: 10px; border: 1.5px solid var(--border);
+    background: white; font-size: 13.5px; font-weight: 600; cursor: pointer;
+    color: var(--text-muted); font-family: var(--font); transition: all .15s;
 }
 .btn-cancel:hover { background: #f3f4f6; border-color: #c8cdd8; color: var(--text); }
 .btn-submit {
     padding: 10px 28px; border-radius: 10px; border: none;
-    background: #001a6e; color: white;
-    font-size: 13.5px; font-weight: 700;
+    background: #001a6e; color: white; font-size: 13.5px; font-weight: 700;
     cursor: pointer; font-family: var(--font);
     transition: all .15s; display: flex; align-items: center; gap: 8px;
     box-shadow: 0 3px 12px rgba(0,26,110,0.3);
@@ -245,7 +193,6 @@
 @section('content')
 <div class="create-page">
 
-    <!-- HERO HEADING -->
     <div class="create-hero">
         <div class="create-hero__eyebrow">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -273,18 +220,13 @@
                 </div>
                 Basic Information
             </div>
-
             <div class="field">
                 <label>Post Title <span class="req">*</span></label>
-                <input type="text" name="title" id="title-field"
-                       placeholder="e.g., College Week 2025 Opening Ceremony"
-                       value="{{ old('title') }}" required>
+                <input type="text" name="title" id="title-field" placeholder="e.g., College Week 2025 Opening Ceremony" value="{{ old('title') }}" required>
             </div>
             <div class="field">
                 <label>Description <span class="req">*</span></label>
-                <textarea name="description" id="desc-field"
-                          placeholder="Describe your event or announcement in detail. Include key info like date, time, and location..."
-                          required>{{ old('description') }}</textarea>
+                <textarea name="description" id="desc-field" placeholder="Describe your event or announcement in detail. Include key info like date, time, and location..." required>{{ old('description') }}</textarea>
             </div>
             <div class="field-row">
                 <div class="field">
@@ -320,18 +262,10 @@
                 </div>
                 Target Platforms <span style="color:#ef4444;font-size:12px;font-weight:400;margin-left:4px;">*</span>
             </div>
-
             @php $selected_platforms = old('platforms', []); @endphp
             <div class="platform-group" id="platform-group">
-                @php
-                    $platforms_list = ['Facebook', 'LinkedIn'];
-                @endphp
-                @foreach($platforms_list as $p)
-                    <button type="button"
-                            class="platform-btn {{ in_array($p, $selected_platforms) ? 'selected' : '' }}"
-                            data-platform="{{ $p }}">
-                        {{ $p }}
-                    </button>
+                @foreach(['Facebook','LinkedIn'] as $p)
+                    <button type="button" class="platform-btn {{ in_array($p, $selected_platforms) ? 'selected' : '' }}" data-platform="{{ $p }}">{{ $p }}</button>
                 @endforeach
             </div>
             <div id="platform-inputs">
@@ -375,6 +309,14 @@
             <p class="ai-hint">Fill in title & description first, then click Generate.</p>
             <textarea class="ai-textarea" name="caption" id="caption-field"
                       placeholder="Your AI-generated caption will appear here. You can also write your own...">{{ old('caption') }}</textarea>
+
+            {{-- Fixed footer preview --}}
+            <div class="ai-footer-preview">
+                <span class="ai-footer-preview__label">✦ Auto-added when you submit — not shown in the box above</span>
+                Apply now and secure your place for the upcoming academic year: https://onlineapp.nu-lipa.edu.ph/quest/register.php<br>
+                Experience 𝘌𝘥𝘶𝘤𝘢𝘵𝘪𝘰𝘯 𝘛𝘩𝘢𝘵 𝘞𝘰𝘳𝘬𝘴.<br>
+                #NULipa #EducationThatWorks
+            </div>
         </div>
 
         {{-- SUBMIT BAR --}}
@@ -395,6 +337,18 @@
 
 @section('scripts')
 <script>
+// ── FIXED FOOTER — auto-appended on submit, NOT shown to user ──────────
+const FIXED_FOOTER = "\n\nApply now and secure your place for the upcoming academic year: https://onlineapp.nu-lipa.edu.ph/quest/register.php\nExperience \u{1D60C}\u{1D625}\u{1D636}\u{1D624}\u{1D622}\u{1D635}\u{1D62A}\u{1D630}\u{1D62F} \u{1D61B}\u{1D629}\u{1D622}\u{1D635} \u{1D61E}\u{1D630}\u{1D633}\u{1D62C}\u{1D634}.\n#NULipa\n#EducationThatWorks";
+
+// AUTO-APPEND FOOTER ON SUBMIT — user sees clean caption, DB gets full footer
+document.getElementById('create-form').addEventListener('submit', function() {
+    const box = document.getElementById('caption-field');
+    const current = box.value.trim();
+    if (current && !current.includes('onlineapp.nu-lipa.edu.ph')) {
+        box.value = current + FIXED_FOOTER;
+    }
+});
+
 // PLATFORM BUTTONS
 const platformInputs = document.getElementById('platform-inputs');
 function updatePlatformInputs() {
@@ -432,33 +386,58 @@ mediaInput.addEventListener('change', () => {
     uploadLabel.style.display = files.length >= 4 ? 'none' : 'flex';
 });
 
-// AI CAPTION
+// AI CAPTION GENERATOR
 async function generateCaption() {
     const title = document.getElementById('title-field').value.trim();
     const desc  = document.getElementById('desc-field').value.trim();
     const cat   = document.getElementById('cat-field').value || 'General';
-    const plats = Array.from(document.querySelectorAll('.platform-btn.selected')).map(b => b.dataset.platform).join(', ');
+    const plats = Array.from(document.querySelectorAll('.platform-btn.selected'))
+                       .map(b => b.dataset.platform).join(', ');
     const btn   = document.getElementById('generate-btn');
     const box   = document.getElementById('caption-field');
-    if (!title || !desc) { alert('Please fill in the Title and Description first.'); return; }
+
+    if (!title || !desc) {
+        alert('Please fill in the Title and Description first.');
+        return;
+    }
+
     const orig = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite;display:inline-block;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Generating...`;
+
     try {
-        const res  = await fetch('/api/generate-caption', {
+        const res = await fetch('/api/generate-caption', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
             body: JSON.stringify({ title, description: desc, category: cat, platforms: plats })
         });
+
         const data = await res.json();
         if (data.error) throw new Error(data.error);
-        if (data.caption) box.value = data.caption;
-        else throw new Error('No caption returned.');
+        if (!data.caption) throw new Error('No caption returned.');
+
+        // Strip ALL hashtags and footers from AI output
+        let caption = data.caption
+            .replace(/#\w+/g, '')                          // remove all hashtags
+            .replace(/Apply now[\s\S]*?register\.php/gi, '')
+            .replace(/https?:\/\/onlineapp\.nu-lipa\.edu\.ph[^\s]*/gi, '')
+            .replace(/Experience\s+\S*[Ee]ducation\S*\s+\S*[Tt]hat\S*\s+\S*[Ww]orks\S*/gi, '')
+            .replace(/\n{3,}/g, '\n\n')   // collapse extra blank lines
+            .trim();
+
+        // Show clean caption to user (no footer yet)
+        box.value = caption;
+
     } catch(e) {
         alert('Caption generation failed: ' + e.message);
     } finally {
-        btn.disabled = false; btn.innerHTML = orig;
+        btn.disabled = false;
+        btn.innerHTML = orig;
     }
 }
 </script>
-@endsection
+@endsection 

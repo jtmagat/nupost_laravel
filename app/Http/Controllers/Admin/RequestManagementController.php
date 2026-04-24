@@ -22,7 +22,6 @@ class RequestManagementController extends Controller
         $filter = $request->input('filter', 'all');
         $sort   = $request->input('sort', 'newest');
 
-        // Stat counts
         $pending  = PostRequest::where('status', 'Pending Review')->count();
         $review   = PostRequest::where('status', 'Under Review')->count();
         $approved = PostRequest::where('status', 'Approved')->count();
@@ -76,13 +75,19 @@ class RequestManagementController extends Controller
         $comments   = RequestComment::where('request_id', $id)->orderBy('created_at', 'asc')->get();
         $activities = RequestActivity::where('request_id', $id)->orderBy('created_at', 'desc')->get();
 
-        // Para sa backward compatibility sa blade view mo
-        $request = $req; 
+        $request = $req;
 
         return view('admin.request_info', compact('req', 'request', 'comments', 'activities'));
     }
 
-    // ── UPDATE STATUS ───────────────────────────────────────────
+    // ── BRANDING EDITOR ──────────────────────────────────────────
+    public function brandingEditor($id)
+    {
+        $request = PostRequest::findOrFail($id);
+        return view('admin.branding-editor', compact('request'));
+    }
+
+    // ── UPDATE STATUS ────────────────────────────────────────────
     public function updateStatus(Request $request)
     {
         $id         = $request->input('request_id');
@@ -141,6 +146,11 @@ class RequestManagementController extends Controller
             }
         }
 
+        $redirect = $request->input('redirect_to');
+        if ($redirect) {
+            return redirect($redirect)->with('success', "Status updated to $new_status.");
+        }
+
         return back()->with('success', "Status updated to $new_status.");
     }
 
@@ -172,17 +182,18 @@ class RequestManagementController extends Controller
         $basePrompt .= "Return ONLY the caption text with hashtags. No explanations, no quotes.";
 
         try {
-            $response = Http::post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={$apiKey}", [
-                'contents' => [
-                    [
-                        'parts' => [['text' => $basePrompt]]
+            $response = Http::post(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={$apiKey}",
+                [
+                    'contents' => [
+                        ['parts' => [['text' => $basePrompt]]]
+                    ],
+                    'generationConfig' => [
+                        'temperature'     => 0.9,
+                        'maxOutputTokens' => 300,
                     ]
-                ],
-                'generationConfig' => [
-                    'temperature'     => 0.9,
-                    'maxOutputTokens' => 300,
                 ]
-            ]);
+            );
 
             if ($response->successful()) {
                 $data    = $response->json();
@@ -205,16 +216,15 @@ class RequestManagementController extends Controller
         $filename    = $httpRequest->input('filename', 'default');
         $caption     = $httpRequest->input('caption', '');
 
-        $captions = json_decode($postRequest->ai_captions ?? '{}', true) ?: [];
-        $captions[$filename] = $caption;
-
+        $captions              = json_decode($postRequest->ai_captions ?? '{}', true) ?: [];
+        $captions[$filename]   = $caption;
         $postRequest->ai_captions = json_encode($captions);
         $postRequest->save();
 
         return response()->json(['success' => true]);
     }
 
-    // ── COMMENTS MANAGEMENT ──────────────────────────────────────
+    // ── COMMENTS ─────────────────────────────────────────────────
     public function postComment(Request $request)
     {
         $id      = $request->input('request_id');
@@ -268,7 +278,7 @@ class RequestManagementController extends Controller
         return response()->json(['comments' => $comments]);
     }
 
-    // ── CALENDAR ────────────────────────────────────────────────
+    // ── CALENDAR ─────────────────────────────────────────────────
     public function calendar(Request $request)
     {
         return view('admin.calendar');

@@ -3,38 +3,76 @@
 
 @section('head-styles')
 <style>
-/* ── TOP BAR ─────────────────────────────────────────── */
-.req-topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 24px; gap: 14px; flex-wrap: wrap;
+/* ── FORCE FONT ──────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap');
+
+/* ── HERO ────────────────────────────── */
+.req-hero {
+    background: linear-gradient(135deg, #001a4d 0%, #002e7a 55%, #003a8c 100%) !important;
+    border-radius: 22px; padding: 28px 32px;
+    margin-bottom: 22px; position: relative; overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,26,77,0.35);
+    isolation: isolate;
 }
+.req-hero::before {
+    content:''; position:absolute; top:-50px; right:-50px;
+    width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 65%);
+    pointer-events:none;
+}
+.req-hero::after {
+    content:''; position:absolute; bottom:-30px; left:30%;
+    width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 65%);
+    pointer-events:none;
+}
+.req-hero__inner { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; position:relative; z-index:1; }
+.req-hero__id    { font-size:11px; color:rgba(255,255,255,0.5) !important; font-weight:600; letter-spacing:0.5px; margin-bottom:8px; }
+.req-hero__title { font-family:'DM Serif Display', var(--font-disp), Georgia, serif !important; font-size:26px; color:white !important; line-height:1.25; margin-bottom:14px; }
+.req-hero__chips { display:flex; gap:8px; flex-wrap:wrap; }
+.hchip {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+    border-radius:20px; padding:5px 14px;
+    font-size:12px; font-weight:700; color:white;
+}
+.hchip--green  { background:rgba(16,185,129,0.25);  border-color:rgba(16,185,129,0.4);  color:#6ee7b7; }
+.hchip--amber  { background:rgba(245,158,11,0.25);  border-color:rgba(245,158,11,0.4);  color:#fcd34d; }
+.hchip--purple { background:rgba(139,92,246,0.25);  border-color:rgba(139,92,246,0.4);  color:#c4b5fd; }
+.hchip--red    { background:rgba(239,68,68,0.25);   border-color:rgba(239,68,68,0.4);   color:#fca5a5; }
+.hchip--gray   { background:rgba(148,163,184,0.2);  border-color:rgba(148,163,184,0.3); color:#cbd5e1; }
+
+.hero-status-form { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.hero-status-sel {
+    height:40px; padding:0 14px;
+    background:rgba(255,255,255,0.15) !important; border:1px solid rgba(255,255,255,0.3);
+    border-radius:12px; font-size:13px; font-family:var(--font); color:white !important;
+    outline:none; cursor:pointer; transition:background .15s;
+    -webkit-appearance:none; appearance:none;
+}
+.hero-status-sel option { background:#002366 !important; color:white !important; }
+.hero-status-sel:hover  { background:rgba(255,255,255,0.22) !important; }
+.hero-save-btn {
+    height:40px; padding:0 20px;
+    background:rgba(255,255,255,0.15) !important; border:1.5px solid rgba(255,255,255,0.35);
+    color:white !important; border-radius:12px; font-size:13px; font-weight:700;
+    cursor:pointer; font-family:var(--font); transition:all .15s;
+}
+.hero-save-btn:hover { background:rgba(255,255,255,0.28) !important; }
+
+/* ── BACK BTN ────────────────────────── */
 .back-btn {
     display: inline-flex; align-items: center; gap: 7px;
     padding: 9px 16px; background: var(--card); border: 1px solid rgba(0,0,0,0.08);
     border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--ink-mid);
-    text-decoration: none; transition: all .15s;
+    text-decoration: none; transition: all .15s; margin-bottom: 18px;
 }
 .back-btn:hover { background: var(--cream-dark); color: var(--ink); }
-.req-topbar-actions { display: flex; align-items: center; gap: 10px; }
-.status-form { display: flex; align-items: center; gap: 8px; }
-.status-select-lg {
-    height: 40px; padding: 0 14px; background: var(--card);
-    border: 1.5px solid rgba(0,0,0,0.1); border-radius: 12px;
-    font-size: 13px; font-family: var(--font); color: var(--ink);
-    outline: none; cursor: pointer; transition: border-color .15s;
-}
-.status-select-lg:focus { border-color: var(--navy-light); }
-.btn-save-status {
-    height: 40px; padding: 0 20px; background: var(--navy); color: white;
-    border: none; border-radius: 12px; font-size: 13px; font-weight: 600;
-    cursor: pointer; font-family: var(--font); transition: background .15s;
-}
-.btn-save-status:hover { background: var(--navy-mid); }
 
-/* ── LAYOUT ──────────────────────────────────────────── */
+/* ── LAYOUT ──────────────────────────── */
 .req-layout { display: grid; grid-template-columns: 1fr 360px; gap: 20px; align-items: start; }
 
-/* ── CARD ────────────────────────────────────────────── */
+/* ── CARD ────────────────────────────── */
 .card {
     background: var(--card); border: 1px solid rgba(0,0,0,0.06);
     border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;
@@ -44,25 +82,12 @@
 .card__head {
     padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.05);
     display: flex; align-items: center; justify-content: space-between;
+    background: #fafbfc;
 }
 .card__title { font-family: var(--font-disp); font-size: 16px; color: var(--ink); }
 .card__body { padding: 20px; }
 
-/* ── REQUEST META ────────────────────────────────────── */
-.req-title-big { font-family: var(--font-disp); font-size: 24px; color: var(--ink); line-height: 1.3; margin-bottom: 14px; }
-.meta-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.meta-chip {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 5px 12px; border-radius: 20px;
-    font-size: 12px; font-weight: 600; white-space: nowrap;
-}
-.meta-chip--blue   { background: var(--navy-pale); color: var(--navy); }
-.meta-chip--amber  { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
-.meta-chip--green  { background: #dcfce7; color: #16a34a; }
-.meta-chip--purple { background: #ede9fe; color: #7c3aed; }
-.meta-chip--red    { background: #fee2e2; color: #dc2626; }
-.meta-chip--gray   { background: #f1f5f9; color: #64748b; }
-
+/* ── REQUEST FIELDS ──────────────────── */
 .req-field { margin-bottom: 18px; }
 .req-field:last-child { margin-bottom: 0; }
 .req-field-label {
@@ -70,7 +95,6 @@
     text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px;
 }
 .req-field-value { font-size: 13.5px; color: var(--ink-mid); line-height: 1.6; }
-
 .platforms-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .plat-pill {
     display: inline-flex; align-items: center; gap: 5px;
@@ -78,7 +102,7 @@
     background: var(--navy-pale); color: var(--navy);
 }
 
-/* ── TABS ────────────────────────────────────────────── */
+/* ── TABS ────────────────────────────── */
 .tabs { display: flex; gap: 4px; padding: 4px; background: var(--cream-dark); border-radius: 14px; margin-bottom: 18px; }
 .tab-btn {
     flex: 1; padding: 8px 14px; border: none; border-radius: 11px;
@@ -90,24 +114,23 @@
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
-/* ── MEDIA GRID ──────────────────────────────────────── */
+/* ── MEDIA GRID ──────────────────────── */
 .media-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
 .media-toolbar-left { display: flex; align-items: center; gap: 8px; }
 .btn-sm {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 7px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 600;
-    cursor: pointer; font-family: var(--font); transition: all .15s; border: none; text-decoration: none;
-    white-space: nowrap;
+    cursor: pointer; font-family: var(--font); transition: all .15s; border: none;
+    text-decoration: none; white-space: nowrap;
 }
-.btn-sm--navy { background: var(--navy); color: white; }
+.btn-sm--navy    { background: var(--navy); color: white; }
 .btn-sm--navy:hover { background: var(--navy-mid); }
 .btn-sm--outline { background: var(--card); color: var(--ink-mid); border: 1px solid rgba(0,0,0,0.1); }
 .btn-sm--outline:hover { background: var(--cream-dark); }
-.btn-sm--green { background: #10b981; color: white; }
+.btn-sm--green   { background: #10b981; color: white; }
 .btn-sm--green:hover { background: #059669; }
-.btn-sm--amber { background: #f59e0b; color: white; }
+.btn-sm--amber   { background: #f59e0b; color: white; }
 .btn-sm--amber:hover { background: #d97706; }
-
 .select-all-wrap { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-soft); cursor: pointer; }
 
 .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
@@ -122,122 +145,47 @@
     position: absolute; top: 8px; left: 8px; z-index: 3;
     width: 22px; height: 22px; border-radius: 6px;
     background: rgba(255,255,255,0.9); border: 2px solid rgba(0,0,0,0.15);
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s;
+    display: flex; align-items: center; justify-content: center; transition: all .15s;
 }
 .media-item.selected .media-item__check { background: var(--navy); border-color: var(--navy); }
 .media-item.selected .media-item__check svg { display: block; }
 .media-item__check svg { display: none; color: white; }
-.media-img-wrap {
-    aspect-ratio: 4/3; overflow: hidden; position: relative;
-    background: var(--cream-dark);
-}
+.media-img-wrap { aspect-ratio: 4/3; overflow: hidden; position: relative; background: var(--cream-dark); }
 .media-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.media-img-wrap .no-img {
-    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
-}
+.media-img-wrap .no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 36px; }
 .media-item__actions {
     position: absolute; bottom: 0; left: 0; right: 0;
     background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
-    padding: 24px 10px 10px;
-    display: flex; gap: 6px; opacity: 0; transition: opacity .2s;
+    padding: 24px 10px 10px; display: flex; gap: 6px;
+    opacity: 0; transition: opacity .2s;
 }
 .media-item:hover .media-item__actions { opacity: 1; }
 .media-action-btn {
     flex: 1; padding: 6px 8px; border-radius: 8px; border: none; cursor: pointer;
     font-size: 11px; font-weight: 600; font-family: var(--font);
-    display: flex; align-items: center; justify-content: center; gap: 4px;
-    transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 4px; transition: all .15s;
 }
-.media-action-btn--dl { background: rgba(255,255,255,0.9); color: var(--ink); }
-.media-action-btn--dl:hover { background: white; }
+.media-action-btn--dl   { background: rgba(255,255,255,0.9); color: var(--ink); }
+.media-action-btn--dl:hover   { background: white; }
 .media-action-btn--edit { background: rgba(0,35,102,0.85); color: white; }
 .media-action-btn--edit:hover { background: var(--navy); }
-
-/* Caption below image */
-.media-caption {
-    padding: 10px 12px;
-}
-.media-caption__text {
-    font-size: 12px; color: var(--ink-mid); line-height: 1.55;
-    margin-bottom: 6px; min-height: 36px;
-}
-.media-caption__ai {
-    font-size: 10px; color: var(--ink-faint); display: flex; align-items: center; gap: 4px;
-}
+.media-caption { padding: 10px 12px; }
+.media-caption__text { font-size: 12px; color: var(--ink-mid); line-height: 1.55; margin-bottom: 6px; min-height: 36px; }
+.media-caption__ai   { font-size: 10px; color: var(--ink-faint); display: flex; align-items: center; gap: 4px; }
 .ai-badge {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 600;
     background: linear-gradient(135deg, #667eea, #764ba2); color: white;
 }
 
-/* ── CAPTION EDITOR MODAL ────────────────────────────── */
-.modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4); z-index: 300;
-    backdrop-filter: blur(4px); align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-    background: var(--card); border-radius: 24px;
-    width: 600px; max-width: 95vw; max-height: 90vh;
-    overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.2);
-    animation: popIn .2s cubic-bezier(.34,1.4,.64,1);
-}
-@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.modal__head {
-    padding: 20px 24px 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
-    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--card);
-}
-.modal__title { font-family: var(--font-disp); font-size: 18px; color: var(--ink); }
-.modal__close {
-    width: 34px; height: 34px; border-radius: 10px; background: var(--cream-dark);
-    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: var(--ink-soft); transition: all .15s;
-}
-.modal__close:hover { background: var(--card-border); color: var(--ink); }
-.modal__body { padding: 20px 24px; }
-.modal__img-preview {
-    width: 100%; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden;
-    background: var(--cream-dark); margin-bottom: 18px;
-}
-.modal__img-preview img { width: 100%; height: 100%; object-fit: cover; }
-.caption-textarea {
-    width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px;
-    padding: 14px; font-size: 13.5px; font-family: var(--font); color: var(--ink);
-    resize: none; outline: none; min-height: 120px; line-height: 1.6;
-    background: var(--cream); transition: border-color .15s;
-}
-.caption-textarea:focus { border-color: var(--navy-light); box-shadow: 0 0 0 3px rgba(30,79,216,0.08); }
-.caption-actions { display: flex; gap: 8px; margin-top: 12px; }
-.prompt-wrap { margin-top: 14px; }
-.prompt-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-faint); margin-bottom: 6px; }
-.prompt-row { display: flex; gap: 8px; }
-.prompt-input {
-    flex: 1; height: 40px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 11px;
-    padding: 0 14px; font-size: 13px; font-family: var(--font); color: var(--ink);
-    background: var(--cream); outline: none; transition: border-color .15s;
-}
-.prompt-input:focus { border-color: var(--navy-light); }
-.prompt-input::placeholder { color: var(--ink-faint); }
-.spinner {
-    display: none; width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
-    border-radius: 50%; animation: spin .6s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── CANVA-LIKE EDIT TAB ─────────────────────────────── */
+/* ── CANVAS EDITOR ───────────────────── */
 .canvas-wrap {
     background: #1a1a1a; border-radius: 16px; overflow: hidden;
     aspect-ratio: 16/9; position: relative; margin-bottom: 14px;
     display: flex; align-items: center; justify-content: center;
 }
 .canvas-wrap canvas { max-width: 100%; max-height: 100%; display: block; }
-.canvas-tools {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
-}
+.canvas-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
 .tool-btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 600;
@@ -247,12 +195,8 @@
 .tool-btn:hover { background: var(--cream-dark); color: var(--ink); }
 .tool-btn.active { background: var(--navy); color: white; border-color: var(--navy); }
 .canvas-no-img { padding: 40px; text-align: center; color: var(--ink-faint); }
-.canvas-no-img p { font-size: 13px; margin-top: 8px; }
 .filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
-.filter-swatch {
-    border-radius: 10px; overflow: hidden; cursor: pointer;
-    border: 2px solid transparent; transition: all .15s;
-}
+.filter-swatch { border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all .15s; }
 .filter-swatch:hover { border-color: var(--navy-light); }
 .filter-swatch.active { border-color: var(--navy); }
 .filter-swatch img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }
@@ -262,13 +206,13 @@
 .slider-row input[type=range] { flex: 1; accent-color: var(--navy); }
 .slider-row span { font-size: 12px; color: var(--ink-soft); width: 30px; text-align: right; }
 
-/* ── SIDEBAR CARDS ───────────────────────────────────── */
+/* ── SIDEBAR ─────────────────────────── */
 .info-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 13px; }
 .info-row:last-child { border-bottom: none; }
 .info-row__label { color: var(--ink-soft); font-weight: 500; }
 .info-row__value { color: var(--ink); font-weight: 600; text-align: right; max-width: 60%; }
 
-/* ── COMMENT SECTION ─────────────────────────────────── */
+/* ── COMMENTS ────────────────────────── */
 .comment-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 320px; overflow-y: auto; }
 .comment-list::-webkit-scrollbar { width: 4px; }
 .comment-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
@@ -277,44 +221,44 @@
 .comment-av { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
 .comment-av--admin { background: var(--navy); }
 .comment-av--user  { background: var(--purple); }
-.comment-bubble {
-    max-width: 78%; padding: 9px 13px; border-radius: 14px;
-    font-size: 12.5px; line-height: 1.5; word-break: break-word;
-}
+.comment-bubble { max-width: 78%; padding: 9px 13px; border-radius: 14px; font-size: 12.5px; line-height: 1.5; word-break: break-word; }
 .comment-bubble--admin { background: var(--navy); color: white; border-bottom-right-radius: 4px; }
 .comment-bubble--user  { background: var(--card); color: var(--ink); border: 1px solid rgba(0,0,0,0.07); border-bottom-left-radius: 4px; }
 .comment-meta { font-size: 10px; margin-top: 3px; opacity: .65; }
 .comment-bubble--admin .comment-meta { text-align: right; color: rgba(255,255,255,.8); }
 .comment-bubble--user  .comment-meta { color: var(--ink-faint); }
-
-.comment-form-area {
-    border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; overflow: hidden;
-    background: var(--cream);
-}
-.comment-textarea {
-    width: 100%; padding: 12px 14px; font-size: 13px; font-family: var(--font);
-    resize: none; outline: none; height: 80px; background: transparent;
-    color: var(--ink); border: none; line-height: 1.5;
-}
-.comment-form-footer {
-    padding: 8px 12px; border-top: 1px solid rgba(0,0,0,0.07);
-    display: flex; align-items: center; justify-content: flex-end;
-}
-.btn-send {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 18px; background: var(--navy); color: white;
-    border: none; border-radius: 10px; font-size: 12.5px; font-weight: 600;
-    cursor: pointer; font-family: var(--font); transition: background .15s;
-}
+.comment-form-area { border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; overflow: hidden; background: var(--cream); }
+.comment-textarea { width: 100%; padding: 12px 14px; font-size: 13px; font-family: var(--font); resize: none; outline: none; height: 80px; background: transparent; color: var(--ink); border: none; line-height: 1.5; }
+.comment-form-footer { padding: 8px 12px; border-top: 1px solid rgba(0,0,0,0.07); display: flex; align-items: center; justify-content: flex-end; }
+.btn-send { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; background: var(--navy); color: white; border: none; border-radius: 10px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: var(--font); transition: background .15s; }
 .btn-send:hover { background: var(--navy-mid); }
 
-/* ── TOAST ───────────────────────────────────────────── */
-.toast {
-    position: fixed; bottom: 24px; right: 24px; z-index: 999;
-    padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 500;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px;
-    animation: slideUp .3s ease, fadeOut .4s ease 2.6s forwards;
-}
+/* ── CAPTION MODAL ───────────────────── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 300; backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--card); border-radius: 24px; width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.2); animation: popIn .2s cubic-bezier(.34,1.4,.64,1); }
+@keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal__head { padding: 20px 24px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--card); }
+.modal__title { font-family: var(--font-disp); font-size: 18px; color: var(--ink); }
+.modal__close { width: 34px; height: 34px; border-radius: 10px; background: var(--cream-dark); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--ink-soft); transition: all .15s; }
+.modal__close:hover { background: rgba(0,0,0,0.1); }
+.modal__body { padding: 20px 24px; }
+.modal__img-preview { width: 100%; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden; background: var(--cream-dark); margin-bottom: 18px; }
+.modal__img-preview img { width: 100%; height: 100%; object-fit: cover; }
+.caption-textarea { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 14px; padding: 14px; font-size: 13.5px; font-family: var(--font); color: var(--ink); resize: none; outline: none; min-height: 120px; line-height: 1.6; background: var(--cream); transition: border-color .15s; }
+.caption-textarea:focus { border-color: var(--navy-light); box-shadow: 0 0 0 3px rgba(30,79,216,0.08); }
+.caption-actions { display: flex; gap: 8px; margin-top: 12px; }
+.prompt-wrap { margin-top: 14px; }
+.prompt-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-faint); margin-bottom: 6px; }
+.prompt-row { display: flex; gap: 8px; }
+.prompt-input { flex: 1; height: 40px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 11px; padding: 0 14px; font-size: 13px; font-family: var(--font); color: var(--ink); background: var(--cream); outline: none; transition: border-color .15s; }
+.prompt-input:focus { border-color: var(--navy-light); }
+.prompt-input::placeholder { color: var(--ink-faint); }
+.spinner { display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ───────────────────────────── */
+.toast { position: fixed; bottom: 24px; right: 24px; z-index: 999; padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; animation: slideUp .3s ease, fadeOut .4s ease 2.6s forwards; }
 .toast--success { background: #059669; color: white; }
 .toast--error   { background: #dc2626; color: white; }
 @keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -324,42 +268,74 @@
 
 @section('content')
 @php
-    $mediaFiles = $request->media_files ? explode(',', $request->media_files) : [];
-    $mediaFiles = array_filter(array_map('trim', $mediaFiles));
-    $captions   = json_decode($request->ai_captions ?? '{}', true) ?: [];
-    $sl = strtolower($request->status);
-    $statusClass = match(true) {
-        str_contains($sl,'approved')     => 'meta-chip--green',
-        str_contains($sl,'posted')       => 'meta-chip--purple',
-        str_contains($sl,'under review') => 'meta-chip--amber',
-        str_contains($sl,'rejected')     => 'meta-chip--red',
-        default                          => 'meta-chip--gray',
+    $mediaFiles = $request->media_files
+        ? (is_array($request->media_files)
+            ? $request->media_files
+            : (json_decode($request->media_files, true) ?? explode(',', $request->media_files)))
+        : [];
+    $mediaFiles = array_filter(array_map(
+        fn($f) => trim(is_array($f) ? ($f['path'] ?? $f['file'] ?? $f['filename'] ?? '') : $f),
+        $mediaFiles
+    ));
+    $captions      = json_decode($request->ai_captions ?? '{}', true) ?: [];
+    $sl            = strtolower($request->status);
+    $statusChip    = match(true) {
+        str_contains($sl,'approved')     => 'hchip--green',
+        str_contains($sl,'posted')       => 'hchip--purple',
+        str_contains($sl,'under review') => 'hchip--amber',
+        str_contains($sl,'rejected')     => 'hchip--red',
+        default                          => 'hchip--gray',
     };
-    $priorityClass = match(strtolower($request->priority ?? '')) {
-        'urgent' => 'meta-chip--red',
-        'high'   => 'meta-chip--amber',
-        default  => 'meta-chip--gray',
+    $priorityChip  = match(strtolower($request->priority ?? '')) {
+        'urgent' => 'hchip--red', 'high' => 'hchip--amber', default => 'hchip--gray',
     };
-    $comments = $request->comments()->orderBy('created_at')->get();
+    $comments      = $request->comments()->orderBy('created_at')->get();
+    $firstImage    = null;
+    foreach ($mediaFiles as $f) {
+        $ext2 = strtolower(pathinfo(trim($f), PATHINFO_EXTENSION));
+        if (in_array($ext2, ['jpg','jpeg','png','gif','webp'])) { $firstImage = trim($f); break; }
+    }
 @endphp
 
-{{-- TOP BAR --}}
-<div class="req-topbar">
-    <a href="{{ route('admin.requests') }}" class="back-btn">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Back to Requests
-    </a>
-    <div class="req-topbar-actions">
-        <form method="POST" action="{{ route('admin.requests.status') }}" class="status-form" onsubmit="return confirm('Update status?')">
+{{-- BACK --}}
+<a href="{{ route('admin.requests') }}" class="back-btn">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Requests
+</a>
+
+{{-- HERO BANNER --}}
+<div class="req-hero" style="background:linear-gradient(135deg,#001a4d 0%,#002e7a 55%,#003a8c 100%)!important;color:white!important;border-radius:22px;padding:28px 32px;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(0,26,77,0.35);">
+    <div class="req-hero__inner">
+        <div style="flex:1;min-width:0;">
+            <div class="req-hero__id" style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:0.5px;margin-bottom:8px;">{{ $request->request_id ?? 'REQ-' . str_pad($request->id, 4, '0', STR_PAD_LEFT) }}</div>
+            <div class="req-hero__title" style="font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:white;line-height:1.25;margin-bottom:14px;">{{ $request->title }}</div>
+            <div class="req-hero__chips" style="display:flex;gap:8px;flex-wrap:wrap;">
+                <span class="hchip {{ $statusChip }}">{{ $request->status }}</span>
+                <span class="hchip {{ $priorityChip }}">{{ strtoupper($request->priority ?? 'NORMAL') }}</span>
+                @if($request->category)<span class="hchip">{{ $request->category }}</span>@endif
+                <span class="hchip">
+                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    {{ $request->requester }}
+                </span>
+                <span class="hchip">📅 {{ $request->created_at->format('M j, Y') }}</span>
+            </div>
+        </div>
+        <form method="POST" action="{{ route('admin.requests.status') }}" class="hero-status-form"
+              style="display:flex;align-items:center;gap:8px;flex-shrink:0;position:relative;z-index:2;"
+              onsubmit="return confirm('Update status?')">
             @csrf
             <input type="hidden" name="request_id" value="{{ $request->id }}">
             <input type="hidden" name="redirect_to" value="{{ route('admin.requests.show', $request->id) }}">
-            <select name="status" class="status-select-lg">
+            <select name="status" class="hero-status-sel"
+                    style="height:40px;padding:0 14px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:12px;font-size:13px;font-family:inherit;color:white;outline:none;cursor:pointer;">
                 @foreach(['Pending Review','Under Review','Approved','Posted','Rejected'] as $s)
-                    <option value="{{ $s }}" {{ $request->status === $s ? 'selected' : '' }}>{{ $s }}</option>
+                    <option value="{{ $s }}" style="background:#002366;color:white;" {{ $request->status === $s ? 'selected' : '' }}>{{ $s }}</option>
                 @endforeach
             </select>
-            <button type="submit" class="btn-save-status">Save Status</button>
+            <button type="submit" class="hero-save-btn"
+                    style="height:40px;padding:0 20px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.35);color:white;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;">
+                Save Status
+            </button>
         </form>
     </div>
 </div>
@@ -367,33 +343,23 @@
 {{-- MAIN LAYOUT --}}
 <div class="req-layout">
 
-    {{-- LEFT COLUMN --}}
+    {{-- LEFT --}}
     <div>
-        {{-- Meta card --}}
+        {{-- Details card --}}
         <div class="card">
             <div class="card__body">
-                <div class="req-title-big">{{ $request->title }}</div>
-                <div class="meta-chips">
-                    <span class="meta-chip {{ $statusClass }}">{{ $request->status }}</span>
-                    <span class="meta-chip {{ $priorityClass }}">{{ strtoupper($request->priority ?? 'NORMAL') }}</span>
-                    @if($request->category)<span class="meta-chip meta-chip--blue">{{ $request->category }}</span>@endif
-                    @if($request->preferred_date)<span class="meta-chip meta-chip--gray">📅 {{ \Carbon\Carbon::parse($request->preferred_date)->format('M j, Y') }}</span>@endif
-                </div>
-
                 @if($request->description)
                 <div class="req-field">
                     <div class="req-field-label">Description</div>
                     <div class="req-field-value">{{ $request->description }}</div>
                 </div>
                 @endif
-
                 @if($request->caption)
                 <div class="req-field">
                     <div class="req-field-label">Requested Caption</div>
                     <div class="req-field-value">{{ $request->caption }}</div>
                 </div>
                 @endif
-
                 @if(!empty($request->platforms_array))
                 <div class="req-field">
                     <div class="req-field-label">Target Platforms</div>
@@ -404,10 +370,16 @@
                     </div>
                 </div>
                 @endif
+                @if($request->preferred_date)
+                <div class="req-field">
+                    <div class="req-field-label">Preferred Post Date</div>
+                    <div class="req-field-value">{{ \Carbon\Carbon::parse($request->preferred_date)->format('F j, Y') }}</div>
+                </div>
+                @endif
             </div>
         </div>
 
-        {{-- Media + Captions + Edit Tabs --}}
+        {{-- Media + Edit Tabs --}}
         <div class="card">
             <div class="card__head">
                 <div class="card__title">Media & Captions</div>
@@ -425,8 +397,6 @@
                 @endif
             </div>
             <div class="card__body">
-
-                {{-- Tabs --}}
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('media', this)">
                         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -448,10 +418,16 @@
                                 Select All ({{ count($mediaFiles) }} files)
                             </label>
                         </div>
-                        <button class="btn-sm btn-sm--amber" onclick="generateAllCaptions()">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM8 12h8M12 8v8"/></svg>
-                            Generate All Captions
-                        </button>
+                        <div style="display:flex;gap:8px;">
+                            <a href="{{ route('admin.requests.brand', $request->id) }}" class="btn-sm btn-sm--navy">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                🖼 Templates
+                            </a>
+                            <button class="btn-sm btn-sm--amber" onclick="generateAllCaptions()">
+                                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM8 12h8M12 8v8"/></svg>
+                                Generate All Captions
+                            </button>
+                        </div>
                     </div>
                     <div class="media-grid" id="media-grid">
                         @foreach($mediaFiles as $i => $file)
@@ -482,6 +458,15 @@
                                     <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                     Caption
                                 </button>
+                                @if($isImage)
+                                <a class="media-action-btn"
+                                   href="{{ route('admin.requests.brand', $request->id) }}?photo={{ urlencode($filename) }}"
+                                   onclick="event.stopPropagation()"
+                                   style="background:rgba(0,46,122,0.85);color:white;text-decoration:none;flex:1;padding:6px 8px;border-radius:8px;border:none;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:4px;">
+                                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                    Template
+                                </a>
+                                @endif
                             </div>
                             <div class="media-caption">
                                 <div class="media-caption__text" id="caption-display-{{ $i }}">
@@ -500,9 +485,8 @@
                     </div>
                     @else
                     <div style="padding:40px;text-align:center;color:var(--ink-faint);">
-                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 12px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 12px;display:block;opacity:.3;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                         <p style="font-size:14px;font-weight:600;color:var(--ink-mid);">No media files attached</p>
-                        <p style="font-size:12.5px;margin-top:4px;">This request doesn't have any uploaded images or files.</p>
                     </div>
                     @endif
                 </div>
@@ -510,19 +494,9 @@
                 {{-- EDIT TAB --}}
                 <div class="tab-pane" id="tab-edit">
                     @if(count($mediaFiles) > 0)
-                    @php
-                        $firstImage = null;
-                        foreach ($mediaFiles as $f) {
-                            $ext2 = strtolower(pathinfo(trim($f), PATHINFO_EXTENSION));
-                            if (in_array($ext2, ['jpg','jpeg','png','gif','webp'])) {
-                                $firstImage = trim($f);
-                                break;
-                            }
-                        }
-                    @endphp
-                    <div style="margin-bottom:12px;">
+                    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                         <label style="font-size:12px;font-weight:600;color:var(--ink-soft);">Select image to edit:</label>
-                        <select id="edit-file-select" onchange="loadEditorImage(this.value)" style="margin-left:8px;padding:5px 12px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12.5px;font-family:var(--font);cursor:pointer;outline:none;">
+                        <select id="edit-file-select" onchange="loadEditorImage(this.value)" style="padding:5px 12px;border:1px solid rgba(0,0,0,0.1);border-radius:8px;font-size:12.5px;font-family:var(--font);cursor:pointer;outline:none;">
                             @foreach($mediaFiles as $f)
                             @php $ext3 = strtolower(pathinfo(trim($f), PATHINFO_EXTENSION)); @endphp
                             @if(in_array($ext3, ['jpg','jpeg','png','gif','webp']))
@@ -530,12 +504,12 @@
                             @endif
                             @endforeach
                         </select>
+                        <button class="btn-sm btn-sm--green" onclick="downloadCanvas()" style="margin-left:auto;">
+                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Edited
+                        </button>
                     </div>
-
-                    <div class="canvas-wrap">
-                        <canvas id="editor-canvas"></canvas>
-                    </div>
-
+                    <div class="canvas-wrap"><canvas id="editor-canvas"></canvas></div>
                     <div class="canvas-tools">
                         <button class="tool-btn active" id="tool-filters" onclick="setTool('filters',this)">
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -549,20 +523,14 @@
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
                             Text
                         </button>
-                        <button class="btn-sm btn-sm--green" onclick="downloadCanvas()" style="margin-left:auto;">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download Edited
-                        </button>
                     </div>
-
-                    {{-- Tool panels --}}
                     <div id="panel-filters" class="tool-panel">
                         <div class="filter-grid">
                             @php $filterNames = ['Normal','Warm','Cool','Vintage','B&W','Fade','Vivid','Matte']; @endphp
                             @foreach($filterNames as $fi => $fn)
                             <div class="filter-swatch {{ $fi===0?'active':'' }}" id="filter-{{ $fi }}" onclick="applyFilter('{{ strtolower($fn) }}', {{ $fi }})">
                                 @if($firstImage)
-                                <img src="/uploads/{{ $firstImage }}" alt="{{ $fn }}" id="filter-preview-{{ $fi }}">
+                                <img src="/uploads/{{ $firstImage }}" alt="{{ $fn }}">
                                 @else
                                 <div style="background:var(--cream-dark);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:18px;">🖼️</div>
                                 @endif
@@ -571,50 +539,26 @@
                             @endforeach
                         </div>
                     </div>
-
                     <div id="panel-adjust" class="tool-panel" style="display:none;">
-                        <div class="slider-row">
-                            <label>Brightness</label>
-                            <input type="range" min="0" max="200" value="100" oninput="adjustCanvas('brightness',this.value);document.getElementById('v-brightness').textContent=this.value" id="sl-brightness">
-                            <span id="v-brightness">100</span>
-                        </div>
-                        <div class="slider-row">
-                            <label>Contrast</label>
-                            <input type="range" min="0" max="200" value="100" oninput="adjustCanvas('contrast',this.value);document.getElementById('v-contrast').textContent=this.value" id="sl-contrast">
-                            <span id="v-contrast">100</span>
-                        </div>
-                        <div class="slider-row">
-                            <label>Saturation</label>
-                            <input type="range" min="0" max="200" value="100" oninput="adjustCanvas('saturate',this.value);document.getElementById('v-saturation').textContent=this.value" id="sl-saturation">
-                            <span id="v-saturation">100</span>
-                        </div>
-                        <div class="slider-row">
-                            <label>Blur</label>
-                            <input type="range" min="0" max="10" value="0" step="0.1" oninput="adjustCanvas('blur',this.value);document.getElementById('v-blur').textContent=this.value" id="sl-blur">
-                            <span id="v-blur">0</span>
-                        </div>
+                        <div class="slider-row"><label>Brightness</label><input type="range" min="0" max="200" value="100" oninput="adjustCanvas('brightness',this.value);document.getElementById('v-brightness').textContent=this.value" id="sl-brightness"><span id="v-brightness">100</span></div>
+                        <div class="slider-row"><label>Contrast</label><input type="range" min="0" max="200" value="100" oninput="adjustCanvas('contrast',this.value);document.getElementById('v-contrast').textContent=this.value" id="sl-contrast"><span id="v-contrast">100</span></div>
+                        <div class="slider-row"><label>Saturation</label><input type="range" min="0" max="200" value="100" oninput="adjustCanvas('saturate',this.value);document.getElementById('v-saturation').textContent=this.value" id="sl-saturation"><span id="v-saturation">100</span></div>
+                        <div class="slider-row"><label>Blur</label><input type="range" min="0" max="10" value="0" step="0.1" oninput="adjustCanvas('blur',this.value);document.getElementById('v-blur').textContent=this.value" id="sl-blur"><span id="v-blur">0</span></div>
                         <button class="btn-sm btn-sm--outline" style="margin-top:6px;" onclick="resetAdjustments()">Reset</button>
                     </div>
-
                     <div id="panel-text" class="tool-panel" style="display:none;">
                         <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
                             <input type="text" id="text-input" placeholder="Enter text to overlay..." style="flex:1;min-width:160px;height:38px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;padding:0 12px;font-size:13px;font-family:var(--font);outline:none;">
                             <input type="color" id="text-color" value="#ffffff" style="width:38px;height:38px;border:none;border-radius:8px;cursor:pointer;">
                             <select id="text-size" style="height:38px;border:1px solid rgba(0,0,0,0.1);border-radius:10px;padding:0 12px;font-size:13px;font-family:var(--font);cursor:pointer;outline:none;">
-                                <option value="20">Small</option>
-                                <option value="32" selected>Medium</option>
-                                <option value="48">Large</option>
-                                <option value="64">XLarge</option>
+                                <option value="20">Small</option><option value="32" selected>Medium</option><option value="48">Large</option><option value="64">XLarge</option>
                             </select>
                             <button class="btn-sm btn-sm--navy" onclick="addTextOverlay()">Add Text</button>
                         </div>
                         <p style="font-size:12px;color:var(--ink-faint);">Text will be centered at the bottom of the image.</p>
                     </div>
                     @else
-                    <div class="canvas-no-img">
-                        <svg width="48" height="48" fill="none" stroke="var(--card-border)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                        <p>No images to edit.</p>
-                    </div>
+                    <div class="canvas-no-img"><p>No images to edit.</p></div>
                     @endif
                 </div>
 
@@ -624,8 +568,6 @@
 
     {{-- RIGHT COLUMN --}}
     <div>
-
-        {{-- Request info --}}
         <div class="card">
             <div class="card__head"><div class="card__title">Request Info</div></div>
             <div class="card__body" style="padding-top:8px;">
@@ -639,7 +581,6 @@
             </div>
         </div>
 
-        {{-- Comments --}}
         <div class="card">
             <div class="card__head">
                 <div class="card__title">Comments</div>
@@ -650,9 +591,7 @@
                     @forelse($comments as $c)
                     @php $isAdmin = $c->sender_role === 'admin'; @endphp
                     <div class="comment-bubble-wrap {{ $isAdmin ? 'comment-bubble-wrap--admin' : '' }}">
-                        <div class="comment-av {{ $isAdmin ? 'comment-av--admin' : 'comment-av--user' }}">
-                            {{ strtoupper(substr($c->sender_name,0,1)) }}
-                        </div>
+                        <div class="comment-av {{ $isAdmin ? 'comment-av--admin' : 'comment-av--user' }}">{{ strtoupper(substr($c->sender_name,0,1)) }}</div>
                         <div class="comment-bubble {{ $isAdmin ? 'comment-bubble--admin' : 'comment-bubble--user' }}">
                             {{ $c->message }}
                             <div class="comment-meta">{{ $isAdmin ? 'Admin' : $c->sender_name }} · {{ $c->created_at->format('M j, g:i A') }}</div>
@@ -673,7 +612,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -687,9 +625,7 @@
             </button>
         </div>
         <div class="modal__body">
-            <div class="modal__img-preview">
-                <img id="modal-img" src="" alt="">
-            </div>
+            <div class="modal__img-preview"><img id="modal-img" src="" alt=""></div>
             <input type="hidden" id="modal-filename">
             <input type="hidden" id="modal-index">
             <textarea class="caption-textarea" id="modal-caption" placeholder="Write or generate a caption for this image…"></textarea>
@@ -697,7 +633,6 @@
                 <button class="btn-sm btn-sm--outline" onclick="closeCaptionEditor()">Cancel</button>
                 <button class="btn-sm btn-sm--navy" onclick="saveCaption()" id="btn-save-caption">Save Caption</button>
             </div>
-
             <div class="prompt-wrap">
                 <div class="prompt-label">✦ Generate with Gemini AI</div>
                 <div class="prompt-row">
@@ -718,7 +653,6 @@
 
 @if(session('success'))<div class="toast toast--success" id="toast"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>{{ session('success') }}</div>@endif
 @if(session('error'))<div class="toast toast--error" id="toast"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>{{ session('error') }}</div>@endif
-
 @endsection
 
 @section('scripts')
@@ -728,7 +662,6 @@ const REQ_TITLE = @json($request->title);
 const REQ_DESC  = @json($request->description ?? '');
 const CSRF      = '{{ csrf_token() }}';
 
-// ── TAB SWITCHING ─────────────────────────────────────
 function switchTab(tab, btn) {
     document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -737,76 +670,50 @@ function switchTab(tab, btn) {
     if (tab === 'edit') initEditor();
 }
 
-// ── MEDIA SELECTION ───────────────────────────────────
-function toggleSelect(i) {
-    const item = document.getElementById('media-item-' + i);
-    item.classList.toggle('selected');
-}
+function toggleSelect(i) { document.getElementById('media-item-' + i)?.classList.toggle('selected'); }
 function toggleSelectAll(cb) {
-    document.querySelectorAll('.media-item').forEach(item => {
-        cb.checked ? item.classList.add('selected') : item.classList.remove('selected');
-    });
+    document.querySelectorAll('.media-item').forEach(item => cb.checked ? item.classList.add('selected') : item.classList.remove('selected'));
 }
 
-// ── DOWNLOAD ──────────────────────────────────────────
 function downloadFile(url, filename) {
-    const a = document.createElement('a');
-    a.href = url; a.download = filename; a.target = '_blank';
+    const a = document.createElement('a'); a.href = url; a.download = filename; a.target = '_blank';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
 }
 function downloadSelected() {
     const selected = document.querySelectorAll('.media-item.selected');
     if (!selected.length) { showToast('Select at least one file first.', 'error'); return; }
-    selected.forEach(item => {
-        setTimeout(() => downloadFile(item.dataset.url, item.dataset.file), 100);
-    });
+    selected.forEach(item => setTimeout(() => downloadFile(item.dataset.url, item.dataset.file), 100));
 }
 function downloadAll() {
-    document.querySelectorAll('.media-item').forEach(item => {
-        setTimeout(() => downloadFile(item.dataset.url, item.dataset.file), 100);
-    });
+    document.querySelectorAll('.media-item').forEach(item => setTimeout(() => downloadFile(item.dataset.url, item.dataset.file), 100));
 }
 
-// ── CAPTION EDITOR ────────────────────────────────────
 function openCaptionEditor(i, filename, url) {
-    document.getElementById('modal-img').src       = url;
-    document.getElementById('modal-filename').value = filename;
-    document.getElementById('modal-index').value    = i;
-    document.getElementById('modal-caption').value  = document.getElementById('caption-display-' + i).textContent.trim();
-    if (document.getElementById('caption-display-' + i).textContent.includes('No caption yet'))
-        document.getElementById('modal-caption').value = '';
-    document.getElementById('modal-prompt').value = '';
+    document.getElementById('modal-img').src        = url;
+    document.getElementById('modal-filename').value  = filename;
+    document.getElementById('modal-index').value     = i;
+    const txt = document.getElementById('caption-display-' + i).textContent.trim();
+    document.getElementById('modal-caption').value   = txt.includes('No caption yet') ? '' : txt;
+    document.getElementById('modal-prompt').value    = '';
     document.getElementById('caption-modal').classList.add('open');
 }
-function closeCaptionEditor() {
-    document.getElementById('caption-modal').classList.remove('open');
-}
+function closeCaptionEditor() { document.getElementById('caption-modal').classList.remove('open'); }
 
 async function generateCaption() {
     const spinner = document.getElementById('gen-spinner');
     const icon    = document.getElementById('gen-icon');
     const btn     = document.getElementById('btn-generate');
-    const prompt  = document.getElementById('modal-prompt').value.trim();
-    const filename= document.getElementById('modal-filename').value;
-
     spinner.style.display = 'block'; icon.style.display = 'none'; btn.disabled = true;
-
     try {
         const res  = await fetch(`/admin/requests/${REQ_ID}/generate-caption`, {
             method: 'POST',
             headers: { 'Content-Type':'application/json', 'X-CSRF-TOKEN':CSRF, 'Accept':'application/json' },
-            body: JSON.stringify({ filename, prompt, title: REQ_TITLE, description: REQ_DESC })
+            body: JSON.stringify({ filename: document.getElementById('modal-filename').value, prompt: document.getElementById('modal-prompt').value.trim(), title: REQ_TITLE, description: REQ_DESC })
         });
         const data = await res.json();
-        if (data.caption) {
-            document.getElementById('modal-caption').value = data.caption;
-            showToast('Caption generated!', 'success');
-        } else {
-            showToast(data.error || 'Generation failed.', 'error');
-        }
-    } catch(e) {
-        showToast('Connection error.', 'error');
-    }
+        if (data.caption) { document.getElementById('modal-caption').value = data.caption; showToast('Caption generated!', 'success'); }
+        else showToast(data.error || 'Generation failed.', 'error');
+    } catch { showToast('Connection error.', 'error'); }
     spinner.style.display = 'none'; icon.style.display = 'block'; btn.disabled = false;
 }
 
@@ -816,7 +723,6 @@ async function saveCaption() {
     const caption  = document.getElementById('modal-caption').value.trim();
     const btn      = document.getElementById('btn-save-caption');
     btn.disabled   = true;
-
     try {
         const res  = await fetch(`/admin/requests/${REQ_ID}/save-caption`, {
             method: 'POST',
@@ -828,20 +734,15 @@ async function saveCaption() {
             const disp = document.getElementById('caption-display-' + idx);
             disp.textContent = caption || 'No caption yet. Click "Caption" to generate or write one.';
             disp.nextElementSibling.innerHTML = caption ? '<span class="ai-badge">✦ AI</span> Generated caption' : '<span style="color:var(--ink-faint);">No caption</span>';
-            closeCaptionEditor();
-            showToast('Caption saved!', 'success');
-        } else {
-            showToast(data.error || 'Save failed.', 'error');
-        }
-    } catch(e) {
-        showToast('Connection error.', 'error');
-    }
+            closeCaptionEditor(); showToast('Caption saved!', 'success');
+        } else showToast(data.error || 'Save failed.', 'error');
+    } catch { showToast('Connection error.', 'error'); }
     btn.disabled = false;
 }
 
 async function generateAllCaptions() {
-    const items = document.querySelectorAll('.media-item');
     showToast('Generating captions for all images…', 'success');
+    const items = document.querySelectorAll('.media-item');
     for (const item of items) {
         const filename = item.dataset.file;
         const ext = filename.split('.').pop().toLowerCase();
@@ -849,38 +750,30 @@ async function generateAllCaptions() {
         const idx = item.id.replace('media-item-','');
         try {
             const res  = await fetch(`/admin/requests/${REQ_ID}/generate-caption`, {
-                method:'POST',
-                headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
+                method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
                 body: JSON.stringify({ filename, title: REQ_TITLE, description: REQ_DESC })
             });
             const data = await res.json();
             if (data.caption) {
                 const disp = document.getElementById('caption-display-' + idx);
-                if (disp) {
-                    disp.textContent = data.caption;
-                    disp.nextElementSibling.innerHTML = '<span class="ai-badge">✦ AI</span> Generated caption';
-                }
+                if (disp) { disp.textContent = data.caption; disp.nextElementSibling.innerHTML = '<span class="ai-badge">✦ AI</span> Generated caption'; }
                 await fetch(`/admin/requests/${REQ_ID}/save-caption`, {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
+                    method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
                     body: JSON.stringify({ filename, caption: data.caption })
                 });
             }
-        } catch(e) {}
+        } catch {}
         await new Promise(r => setTimeout(r, 500));
     }
     showToast('All captions generated!', 'success');
 }
 
-// ── COMMENT ───────────────────────────────────────────
 async function sendComment() {
     const input = document.getElementById('comment-input');
-    const msg   = input.value.trim();
-    if (!msg) return;
+    const msg   = input.value.trim(); if (!msg) return;
     try {
         const res  = await fetch('/admin/requests/comment', {
-            method:'POST',
-            headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
+            method:'POST', headers:{'Content-Type':'application/json','X-CSRF-TOKEN':CSRF,'Accept':'application/json'},
             body: JSON.stringify({ request_id: REQ_ID, message: msg })
         });
         const data = await res.json();
@@ -889,48 +782,29 @@ async function sendComment() {
             const list = document.getElementById('comment-list');
             const html = `<div class="comment-bubble-wrap comment-bubble-wrap--admin">
                 <div class="comment-av comment-av--admin">A</div>
-                <div class="comment-bubble comment-bubble--admin">
-                    ${esc(msg)}
-                    <div class="comment-meta">Admin · Just now</div>
-                </div>
+                <div class="comment-bubble comment-bubble--admin">${esc(msg)}<div class="comment-meta">Admin · Just now</div></div>
             </div>`;
             if (list.querySelector('[style]')) list.innerHTML = '';
             list.insertAdjacentHTML('beforeend', html);
             list.scrollTop = list.scrollHeight;
         }
-    } catch(e) {}
+    } catch {}
 }
-document.getElementById('comment-input').addEventListener('keydown', e => {
-    if (e.key==='Enter' && e.ctrlKey) { e.preventDefault(); sendComment(); }
-});
+document.getElementById('comment-input').addEventListener('keydown', e => { if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();sendComment();} });
 
-// ── CANVAS EDITOR ─────────────────────────────────────
-let editorImg    = null;
-let currentFilter = 'normal';
-let adjustments  = { brightness:100, contrast:100, saturate:100, blur:0 };
-let textOverlays = [];
+/* CANVAS EDITOR */
+let editorImg = null, currentFilter = 'normal', adjustments = { brightness:100, contrast:100, saturate:100, blur:0 }, textOverlays = [];
 
-function initEditor() {
-    const sel = document.getElementById('edit-file-select');
-    if (sel) loadEditorImage(sel.value);
-}
+function initEditor() { const sel = document.getElementById('edit-file-select'); if (sel) loadEditorImage(sel.value); }
 function loadEditorImage(url) {
-    const canvas = document.getElementById('editor-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('editor-canvas'); if (!canvas) return;
     const img = new Image(); img.crossOrigin='anonymous';
-    img.onload = () => {
-        editorImg = img;
-        canvas.width  = img.width;
-        canvas.height = img.height;
-        renderCanvas();
-    };
-    img.onerror = () => { ctx.clearRect(0,0,canvas.width,canvas.height); };
+    img.onload = () => { editorImg=img; canvas.width=img.width; canvas.height=img.height; renderCanvas(); };
+    img.onerror = () => {};
     img.src = url + '?t=' + Date.now();
 }
 function renderCanvas() {
-    const canvas = document.getElementById('editor-canvas');
-    if (!canvas || !editorImg) return;
+    const canvas = document.getElementById('editor-canvas'); if (!canvas || !editorImg) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const filters = [];
@@ -950,10 +824,8 @@ function renderCanvas() {
     ctx.filter = 'none';
     textOverlays.forEach(t => {
         ctx.font = `bold ${t.size}px DM Sans, sans-serif`;
-        ctx.fillStyle = t.color;
-        ctx.textAlign = 'center';
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)';
-        ctx.lineWidth = 3;
+        ctx.fillStyle = t.color; ctx.textAlign = 'center';
+        ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 3;
         ctx.strokeText(t.text, canvas.width/2, t.y);
         ctx.fillText(t.text, canvas.width/2, t.y);
     });
@@ -964,25 +836,19 @@ function applyFilter(name, idx) {
     document.getElementById('filter-' + idx)?.classList.add('active');
     renderCanvas();
 }
-function adjustCanvas(prop, val) {
-    adjustments[prop] = parseFloat(val);
-    renderCanvas();
-}
+function adjustCanvas(prop, val) { adjustments[prop] = parseFloat(val); renderCanvas(); }
 function resetAdjustments() {
     adjustments = { brightness:100, contrast:100, saturate:100, blur:0 };
     ['brightness','contrast','saturation','blur'].forEach(s => {
-        const el = document.getElementById('sl-' + s);
-        if (el) el.value = s==='blur' ? 0 : 100;
-        const v = document.getElementById('v-' + s);
-        if (v) v.textContent = s==='blur' ? 0 : 100;
+        const el = document.getElementById('sl-' + s); if (el) el.value = s==='blur' ? 0 : 100;
+        const v  = document.getElementById('v-' + s);  if (v)  v.textContent = s==='blur' ? 0 : 100;
     });
     renderCanvas();
 }
 function addTextOverlay() {
-    const text  = document.getElementById('text-input').value.trim();
+    const text  = document.getElementById('text-input').value.trim(); if (!text) return;
     const color = document.getElementById('text-color').value;
     const size  = parseInt(document.getElementById('text-size').value);
-    if (!text) return;
     const canvas = document.getElementById('editor-canvas');
     textOverlays.push({ text, color, size, y: (canvas?.height || 400) - 40 });
     renderCanvas();
@@ -1003,19 +869,14 @@ function setTool(tool, btn) {
     btn.classList.add('active');
 }
 
-// ── TOAST ─────────────────────────────────────────────
 function showToast(msg, type='success') {
-    const existing = document.getElementById('toast-dynamic');
-    if (existing) existing.remove();
-    const t = document.createElement('div');
-    t.id = 'toast-dynamic';
+    document.getElementById('toast-dynamic')?.remove();
+    const t = document.createElement('div'); t.id = 'toast-dynamic';
     t.className = 'toast toast--' + type;
     t.innerHTML = `<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">${type==='success'?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'}</svg>${esc(msg)}`;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+    document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
 }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
 setTimeout(() => document.getElementById('toast')?.remove(), 3000);
 </script>
 @endsection
