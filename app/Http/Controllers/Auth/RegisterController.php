@@ -69,7 +69,11 @@ class RegisterController extends Controller
             Mail::send([], [], function ($message) use ($email, $name, $otp) {
                 $message->to($email, $name)
                     ->subject('Your NUPost Verification Code')
+<<<<<<< HEAD
                     ->html(self::getOtpEmailHtml($name, $otp));
+=======
+                    ->html(self::getOtpEmailHtml($name, $otp, $email));
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             });
             $sent = true;
         } catch (\Exception $e) {
@@ -95,13 +99,23 @@ class RegisterController extends Controller
         return $masked . '@' . $domain;
     }
 
+<<<<<<< HEAD
     private static function getOtpEmailHtml(string $name, string $otp): string
+=======
+    private static function getOtpEmailHtml(string $name, string $otp, string $email): string
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
     {
         $digits = str_split($otp);
         $boxes  = '';
         foreach ($digits as $d) {
             $boxes .= "<span style='display:inline-block;width:48px;height:56px;background:#f0f4ff;border:2px solid #002366;border-radius:10px;font-size:28px;font-weight:700;color:#002366;line-height:56px;text-align:center;margin:0 4px;font-family:monospace;'>$d</span>";
         }
+<<<<<<< HEAD
+=======
+        
+        $verifyLink = route('verify.link', ['email' => $email, 'token' => $otp]);
+
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
         return "<!DOCTYPE html><html><body style='margin:0;padding:0;background:#f5f6fa;font-family:Arial,sans-serif;'>
         <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f6fa;padding:40px 0;'>
         <tr><td align='center'>
@@ -117,8 +131,19 @@ class RegisterController extends Controller
                 <div style='font-size:11px;font-weight:600;color:#6b7280;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;'>Your Verification Code</div>
                 <div>$boxes</div>
             </div>
+<<<<<<< HEAD
             <div style='margin-top:20px;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 18px;font-size:13px;color:#92400e;font-weight:500;display:inline-block;'>
                 ⏱️ This code expires in <strong>10 minutes</strong>
+=======
+            
+            <div style='margin-top:28px;'>
+                <p style='font-size:14px;color:#6b7280;margin:0 0 12px;'>Or you can simply click below:</p>
+                <a href='$verifyLink' style='display:inline-block;background:#002366;color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:14px 32px;border-radius:8px;'>Verify Email Directly</a>
+            </div>
+
+            <div style='margin-top:30px;background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 18px;font-size:13px;color:#92400e;font-weight:500;display:inline-block;'>
+                ⏱️ This code & link expires in <strong>10 minutes</strong>
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             </div>
         </td></tr>
         <tr><td style='background:#f5f6fa;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;'>

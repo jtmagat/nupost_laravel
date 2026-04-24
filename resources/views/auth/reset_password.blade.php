@@ -58,16 +58,36 @@ html, body { height: 100%; font-family: var(--font); }
             @csrf
             <div class="field">
                 <label>NEW PASSWORD</label>
+<<<<<<< HEAD
                 <input type="password" name="new_password" id="new_password"
                        placeholder="Min. 8 chars, uppercase, number, symbol"
                        autocomplete="new-password" oninput="checkStrength(this.value)">
+=======
+                <div style="position:relative;">
+                    <input type="password" name="new_password" id="new_password"
+                           placeholder="Min. 8 chars, uppercase, number, symbol"
+                           autocomplete="new-password" oninput="checkStrength(this.value)" style="padding-right: 40px;">
+                    <button type="button" onclick="togglePassword('new_password', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; display:flex; align-items:center; padding:0;">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
                 <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
                 <div class="strength-text" id="strength-text"></div>
                 <div class="password-hint">Must contain: uppercase, number, special character</div>
             </div>
             <div class="field">
                 <label>CONFIRM NEW PASSWORD</label>
+<<<<<<< HEAD
                 <input type="password" name="confirm_password" placeholder="Re-enter new password" autocomplete="new-password">
+=======
+                <div style="position:relative;">
+                    <input type="password" name="confirm_password" id="confirm_password" placeholder="Re-enter new password" autocomplete="new-password" style="padding-right: 40px;">
+                    <button type="button" onclick="togglePassword('confirm_password', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; display:flex; align-items:center; padding:0;">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             </div>
             <button type="submit" class="btn">Reset Password</button>
         </form>
@@ -92,6 +112,20 @@ function checkStrength(val) {
     text.textContent      = score > 0 ? labels[score] : '';
     text.style.color      = colors[score];
 }
+<<<<<<< HEAD
+=======
+function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const svg = btn.querySelector('svg');
+    if (input.type === 'password') {
+        input.type = 'text';
+        svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+        input.type = 'password';
+        svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+}
+>>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 </script>
 </body>
 </html>
