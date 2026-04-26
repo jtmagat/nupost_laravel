@@ -176,17 +176,8 @@ html, body {
     display: flex; align-items: center;
     padding: 0 28px; gap: 14px; flex-shrink: 0;
     border-radius: 22px 22px 0 0;
+    justify-content: flex-end;
 }
-.topbar__search { flex: 1; max-width: 360px; position: relative; }
-.topbar__search input {
-    width: 100%; height: 40px; background: var(--card);
-    border: 1.5px solid rgba(0,0,0,0.08); border-radius: 20px;
-    padding: 0 14px 0 40px; font-size: 13px; font-family: var(--font);
-    color: var(--ink); outline: none; transition: border-color .15s, box-shadow .15s;
-}
-.topbar__search input:focus { border-color: var(--navy-light); box-shadow: 0 0 0 3px rgba(30,79,216,0.08); }
-.topbar__search input::placeholder { color: var(--ink-faint); }
-.topbar__search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-faint); pointer-events: none; }
 .topbar__right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 .topbar__date {
     padding: 7px 14px; border-radius: 20px;
@@ -334,12 +325,6 @@ html, body {
 
     <!-- TOPBAR -->
     <header class="topbar">
-        <div class="topbar__search">
-            <span class="topbar__search-icon">
-                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </span>
-            <input type="text" placeholder="Search requests, users...">
-        </div>
         <div class="topbar__right">
             <div class="topbar__date" id="topbar-date"></div>
             <div class="admin-chip-wrap">

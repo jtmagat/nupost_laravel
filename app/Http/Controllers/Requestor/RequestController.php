@@ -83,7 +83,7 @@ class RequestController extends Controller
             $max_size      = 10 * 1024 * 1024;
             $uploaded      = [];
 
-            foreach (array_slice($request->file('media'), 0, 4) as $file) {
+            foreach (array_slice($request->file('media'), 0, 10) as $file) {
                 if (!$file->isValid()) continue;
                 if ($file->getSize() > $max_size) continue;
                 if (!in_array($file->getMimeType(), $allowed_types)) continue;
@@ -151,14 +151,13 @@ class RequestController extends Controller
             'preferred_date' => $post_date ?: null,
         ];
 
-        // Handle new media upload
         if ($request->hasFile('media')) {
             $upload_dir    = public_path('uploads');
             $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/quicktime'];
             $max_size      = 10 * 1024 * 1024;
             $uploaded      = [];
 
-            foreach (array_slice($request->file('media'), 0, 4) as $file) {
+            foreach (array_slice($request->file('media'), 0, 10) as $file) {
                 if (!$file->isValid()) continue;
                 if ($file->getSize() > $max_size) continue;
                 if (!in_array($file->getMimeType(), $allowed_types)) continue;
@@ -183,7 +182,6 @@ class RequestController extends Controller
                         ->where('status', 'Pending Review')
                         ->firstOrFail();
 
-        // Delete media files
         if ($req->media_file) {
             foreach ($req->media_files as $file) {
                 $path = public_path('uploads/' . $file);
@@ -232,6 +230,7 @@ class RequestController extends Controller
         $year      = (int)($request->input('year',  date('Y')));
         $is_public = (bool)session('cal_public', false);
 
+        // Toggle public/private mode
         if ($request->has('toggle_public')) {
             session(['cal_public' => !$is_public]);
             return redirect()->route('requestor.calendar', [
@@ -247,28 +246,33 @@ class RequestController extends Controller
         $next_month = $month + 1; $next_year = $year;
         if ($next_month > 12) { $next_month = 1;  $next_year++; }
 
+        // ── EVENTS ─────────────────────────────────────────────
         if ($is_public) {
             $all_events = PostRequest::whereNotNull('preferred_date')
                 ->whereMonth('preferred_date', $month)
                 ->whereYear('preferred_date', $year)
                 ->orderBy('preferred_date')
+                ->orderByRaw("FIELD(priority,'Urgent','High','Medium','Low')")
+                ->orderBy('created_at')
                 ->get();
         } else {
             $all_events = PostRequest::where('requester', $user_name)
-                ->whereMonth('created_at', $month)
-                ->whereYear('created_at', $year)
+                ->whereNotNull('preferred_date')
+                ->whereMonth('preferred_date', $month)
+                ->whereYear('preferred_date', $year)
+                ->orderBy('preferred_date')
+                ->orderByRaw("FIELD(priority,'Urgent','High','Medium','Low')")
                 ->orderBy('created_at')
                 ->get();
         }
 
         $events = [];
         foreach ($all_events as $ev) {
-            $day = $is_public
-                ? (int)date('j', strtotime($ev->preferred_date))
-                : (int)date('j', strtotime($ev->created_at));
+            $day = (int)date('j', strtotime($ev->preferred_date));
             $events[$day][] = $ev;
         }
 
+        // ── UPCOMING 7 DAYS ────────────────────────────────────
         $today   = now()->format('Y-m-d');
         $in7days = now()->addDays(7)->format('Y-m-d');
 
@@ -276,6 +280,7 @@ class RequestController extends Controller
             $upcoming = PostRequest::whereNotNull('preferred_date')
                 ->whereBetween('preferred_date', [$today, $in7days])
                 ->orderBy('preferred_date')
+                ->orderByRaw("FIELD(priority,'Urgent','High','Medium','Low')")
                 ->get()
                 ->map(function ($r) use ($user_name) {
                     $r->is_mine = $r->requester === $user_name;
@@ -283,9 +288,10 @@ class RequestController extends Controller
                 });
         } else {
             $upcoming = PostRequest::where('requester', $user_name)
-                ->whereDate('created_at', '>=', $today)
-                ->whereDate('created_at', '<=', $in7days)
-                ->orderBy('created_at')
+                ->whereNotNull('preferred_date')
+                ->whereBetween('preferred_date', [$today, $in7days])
+                ->orderBy('preferred_date')
+                ->orderByRaw("FIELD(priority,'Urgent','High','Medium','Low')")
                 ->get()
                 ->map(function ($r) { $r->is_mine = true; return $r; });
         }
@@ -306,5 +312,29 @@ class RequestController extends Controller
             'first_day', 'days_in_month', 'days_in_prev',
             'is_public', 'unread_count'
         ));
+    }
+
+    /**
+     * Returns JSON of all requests on a given date (for the create form calendar load panel).
+     * Used by: GET /requestor/calendar/requests-by-date?date=YYYY-MM-DD
+     */
+    public function requestsByDate(Request $request)
+    {
+        $date = trim($request->query('date', ''));
+
+        if (!$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return response()->json(['total' => 0, 'requests' => []]);
+        }
+
+        $requests = PostRequest::whereNotNull('preferred_date')
+            ->whereDate('preferred_date', $date)
+            ->select('title', 'status')
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return response()->json([
+            'total'    => $requests->count(),
+            'requests' => $requests->toArray(),
+        ]);
     }
 }

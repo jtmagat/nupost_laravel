@@ -15,17 +15,11 @@ use App\Http\Controllers\Requestor\ProfileController;
 use App\Http\Controllers\Requestor\NotificationController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\RequestManagementController;
-<<<<<<< HEAD
 use App\Http\Controllers\Admin\FacebookAnalyticsController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingsController;
 
-=======
-use App\Http\Controllers\Admin\AnalyticsController;
-use App\Http\Controllers\Admin\ReportsController;
-use App\Http\Controllers\Admin\SettingsController;
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 /*
 |--------------------------------------------------------------------------
 | Web Routes - NUPost Project
@@ -45,10 +39,6 @@ Route::middleware('guest.nupost')->group(function () {
     Route::post('/register',     [RegisterController::class, 'store'])->name('register.store');
 
     // OTP and Verification
-<<<<<<< HEAD
-=======
-    Route::get('/verify-email/{email}/{token}', [OtpController::class, 'verifyLink'])->name('verify.link');
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
     Route::get('/verify',        [OtpController::class, 'index'])->name('otp.index');
     Route::post('/verify',       [OtpController::class, 'store'])->name('otp.store');
     Route::get('/verify/resend', [OtpController::class, 'resend'])->name('otp.resend');
@@ -78,19 +68,18 @@ Route::middleware('auth.nupost:requestor')->prefix('requestor')->name('requestor
     Route::delete('/requests/{id}',    [RequestController::class, 'destroy'])->name('requests.destroy');
     Route::get('/requests/{id}/chat',  [RequestController::class, 'chat'])->name('requests.chat');
     Route::post('/requests/{id}/chat', [RequestController::class, 'sendChat'])->name('requests.chat.send');
-<<<<<<< HEAD
     Route::get('/requests/{id}',       [RequestManagementController::class, 'show'])->name('requests.show');
     Route::post('/requests/{id}/generate-caption', [RequestManagementController::class, 'generateCaption'])->name('requests.generate-caption');
     Route::post('/requests/{id}/save-caption',     [RequestManagementController::class, 'saveCaption'])->name('requests.save-caption');
-=======
-    Route::get('/requests/{id}', [RequestManagementController::class, 'show'])->name('requests.show');
-Route::post('/requests/{id}/generate-caption', [RequestManagementController::class, 'generateCaption'])->name('requests.generate-caption');
-Route::post('/requests/{id}/save-caption', [RequestManagementController::class, 'saveCaption'])->name('requests.save-caption');
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 
-    // Calendar & Notifications
-    Route::get('/calendar',      [RequestController::class,      'calendar'])->name('calendar');
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
+    // Calendar — static routes BEFORE dynamic
+    Route::get('/calendar',                    [RequestController::class, 'calendar'])->name('calendar');
+    Route::get('/calendar/requests-by-date',   [RequestController::class, 'requestsByDate'])->name('calendar.requests-by-date');
+
+    // Notifications
+    Route::get('/notifications',       [NotificationController::class, 'index'])->name('notifications');
+    Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/read', [NotificationController::class, 'markRead'])->name('notifications.markread');
 
     // Profile & Settings
     Route::get('/profile',             [ProfileController::class, 'index'])->name('profile');
@@ -103,16 +92,16 @@ Route::post('/requests/{id}/save-caption', [RequestManagementController::class, 
 
 // ─── ADMIN ROUTES ──────────────────────────────────────────────────────────
 Route::middleware('auth.nupost:admin')->prefix('admin')->name('admin.')->group(function () {
-<<<<<<< HEAD
     Route::get('/dashboard',  [AdminDashboardController::class,    'index'])->name('dashboard');
     Route::get('/requests',   [RequestManagementController::class, 'index'])->name('requests');
     Route::get('/calendar',   [RequestManagementController::class, 'calendar'])->name('calendar');
-    Route::get('/analytics',  [FacebookAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/analytics',         [FacebookAnalyticsController::class, 'index'])->name('analytics');
     Route::get('/analytics/refresh', [FacebookAnalyticsController::class, 'refresh'])->name('analytics.refresh');
-    Route::get('/analytics',  [AnalyticsController::class,         'index'])->name('analytics');
     Route::get('/reports',    [ReportsController::class,           'index'])->name('reports');
     Route::get('/reports/export', [ReportsController::class,       'export'])->name('reports.export');
     Route::get('/settings',   [SettingsController::class,          'index'])->name('settings');
+    Route::get('/notifications/fetch', [\App\Http\Controllers\Admin\NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/read', [\App\Http\Controllers\Admin\NotificationController::class, 'markRead'])->name('notifications.read');
 
     // Request detail & actions — static routes BEFORE dynamic {id}
     Route::post('/requests/status',       [RequestManagementController::class, 'updateStatus'])->name('requests.status');
@@ -124,21 +113,8 @@ Route::middleware('auth.nupost:admin')->prefix('admin')->name('admin.')->group(f
     Route::post('/requests/{id}/generate-caption', [RequestManagementController::class, 'generateCaption'])->name('requests.generate-caption');
     Route::post('/requests/{id}/save-caption',     [RequestManagementController::class, 'saveCaption'])->name('requests.save-caption');
 
-    // ✅ BRANDING EDITOR — correct route (no double /admin prefix)
+    // Branding Editor
     Route::get('/requests/{id}/brand',    [RequestManagementController::class, 'brandingEditor'])->name('requests.brand');
-=======
-    Route::get('/dashboard',               [AdminDashboardController::class,    'index'])->name('dashboard');
-    Route::get('/requests',                [RequestManagementController::class, 'index'])->name('requests');
-    Route::get('/calendar', [RequestManagementController::class, 'calendar'])->name('calendar');
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-Route::get('/reports',   [ReportsController::class,   'index'])->name('reports');
-Route::get('/reports/export', [ReportsController::class, 'export'])->name('reports.export');
-Route::get('/settings',  [SettingsController::class,  'index'])->name('settings');
-    Route::get('/requests/{id}',           [RequestManagementController::class, 'show'])->name('requests.show');
-    Route::post('/requests/status',        [RequestManagementController::class, 'updateStatus'])->name('requests.status');
-    Route::post('/requests/comment',       [RequestManagementController::class, 'postComment'])->name('requests.comment');
-    Route::get('/requests/{id}/comments',  [RequestManagementController::class, 'getComments'])->name('requests.comments');
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 });
 
 // ─── GEMINI AI CAPTION GENERATION ─────────────────────────────────────────

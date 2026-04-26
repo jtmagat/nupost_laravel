@@ -18,10 +18,22 @@ class FacebookAnalyticsController extends Controller
         $this->token  = env('FB_PAGE_ACCESS_TOKEN', '');
     }
 
+    public function index()
+    {
+        $fb = $this->getData();
+
+        return view('admin.analytics', compact('fb'));
+    }
+
     public function getData(): array
     {
         if (!$this->pageId || !$this->token) {
-            return ['error' => 'FB_PAGE_ID or FB_PAGE_ACCESS_TOKEN missing in .env', 'pageInfo'=>null,'metrics'=>null,'posts'=>[]];
+            return [
+                'error'    => 'FB_PAGE_ID or FB_PAGE_ACCESS_TOKEN missing in .env',
+                'pageInfo' => null,
+                'metrics'  => null,
+                'posts'    => [],
+            ];
         }
 
         try {
@@ -53,7 +65,7 @@ class FacebookAnalyticsController extends Controller
 
             $posts = $postsRes['data'] ?? [];
 
-            // ── 3. Build metrics from post data (no insights API needed) ─
+            // ── 3. Build metrics from post data ──────────────────────────
             $totalLikes    = 0;
             $totalComments = 0;
             $totalShares   = 0;
@@ -64,12 +76,12 @@ class FacebookAnalyticsController extends Controller
             }
 
             $metrics = [
-                'page_fans'     => ['total' => $pageInfo['fan_count']       ?? 0, 'daily' => []],
-                'followers'     => ['total' => $pageInfo['followers_count'] ?? 0, 'daily' => []],
-                'total_likes'   => ['total' => $totalLikes,    'daily' => []],
-                'total_comments'=> ['total' => $totalComments, 'daily' => []],
-                'total_shares'  => ['total' => $totalShares,   'daily' => []],
-                'total_posts'   => ['total' => count($posts),  'daily' => []],
+                'page_fans'      => ['total' => $pageInfo['fan_count']       ?? 0, 'daily' => []],
+                'followers'      => ['total' => $pageInfo['followers_count'] ?? 0, 'daily' => []],
+                'total_likes'    => ['total' => $totalLikes,    'daily' => []],
+                'total_comments' => ['total' => $totalComments, 'daily' => []],
+                'total_shares'   => ['total' => $totalShares,   'daily' => []],
+                'total_posts'    => ['total' => count($posts),  'daily' => []],
             ];
 
             return [

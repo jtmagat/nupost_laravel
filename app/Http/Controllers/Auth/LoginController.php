@@ -42,10 +42,7 @@ class LoginController extends Controller
         if ($user && (Hash::check($password, $user->password) || $user->password === $password)) {
             if (!$user->is_verified) {
                 LoginAttempt::create(['email' => $email, 'ip_address' => $request->ip(), 'success' => false, 'attempted_at' => now()]);
-<<<<<<< HEAD
-                return back()->withInput()->with('error', 'Please verify your email first.');
-=======
-                
+
                 // Auto resend OTP link
                 $otp        = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
                 $expires_at = now()->addMinutes(10);
@@ -57,7 +54,7 @@ class LoginController extends Controller
                     'otp_code'   => $otp,
                     'expires_at' => $expires_at,
                 ]);
-                
+
                 try {
                     \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $otp) {
                         $message->to($user->email, $user->name)
@@ -69,7 +66,6 @@ class LoginController extends Controller
                 }
 
                 return back()->withInput()->with('error', 'Please verify your email first. A new verification link has been sent to your inbox.');
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             }
 
             LoginAttempt::create(['email' => $email, 'ip_address' => $request->ip(), 'success' => true, 'attempted_at' => now()]);

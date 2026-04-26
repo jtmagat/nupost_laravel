@@ -101,16 +101,12 @@ html, body { height: 100%; font-family: var(--font-inter); }
             </div>
             <div class="login__field">
                 <label class="login__label">PASSWORD:</label>
-<<<<<<< HEAD
-                <input class="login__input login__input--password" type="password" name="password" placeholder="••••••••" required>
-=======
                 <div style="position:relative;">
                     <input class="login__input login__input--password" type="password" name="password" id="login-password" placeholder="••••••••" required style="padding-right: 40px;">
                     <button type="button" onclick="togglePassword('login-password', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; display:flex; align-items:center; padding:0;">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             </div>
             <div class="remember-row">
                 <div class="remember-box" id="remember-box" onclick="toggleRemember()">
@@ -127,8 +123,8 @@ html, body { height: 100%; font-family: var(--font-inter); }
             Don't have an account? <a href="{{ route('register') }}">Sign Up</a>
         </div>
         <div style="margin-top:8px;font-size:12px;text-align:center;">
-    <a href="{{ route('password.forgot') }}" style="color:#6b7280;text-decoration:none;">Forgot Password?</a>
-</div>
+            <a href="{{ route('password.forgot') }}" style="color:#6b7280;text-decoration:none;">Forgot Password?</a>
+        </div>
         <div class="secure-badge">
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -144,8 +140,7 @@ function toggleRemember() {
     box.classList.toggle('checked');
     input.checked = box.classList.contains('checked');
 }
-<<<<<<< HEAD
-=======
+
 function togglePassword(id, btn) {
     const input = document.getElementById(id);
     const svg = btn.querySelector('svg');
@@ -157,7 +152,6 @@ function togglePassword(id, btn) {
         svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
     }
 }
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 </script>
 </body>
 </html>

@@ -10,31 +10,57 @@
 <style>
 :root {
     --sidebar-bg:   #111111;
-    --sidebar-w:    72px;
     --accent:       #3b6ef5;
     --accent-dim:   rgba(59,110,245,0.15);
-    --navy:         #0e2040;
-    --navy-light:   #132648;
-
+    --navy:         #002366;
+    --navy-light:   #1e4fd8;
+    --navy-pale:    #e8eef8;
     --page-bg:      #d8dce8;
     --card-bg:      #ffffff;
     --border:       #e4e8f0;
     --text:         #111827;
     --text-muted:   #6b7280;
     --text-faint:   #9ca3af;
-
     --font:         'DM Sans', sans-serif;
     --topbar-h:     64px;
     --radius-xl:    22px;
     --radius-lg:    16px;
     --radius:       12px;
     --radius-sm:    8px;
-
-    /* admin sidebar vars */
     --sb-w:         80px;
     --sb-inner:     56px;
+    --amber:        #f59e0b;
 }
+.sb-create {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; position: relative;
+    box-shadow: 0 4px 14px rgba(59,110,245,0.5);
+}
+.sb-create svg {
+    position: relative; z-index: 2;
+    transition: transform .25s cubic-bezier(.34,1.4,.64,1);
+}
+.sb-create:hover svg { transform: rotate(90deg) scale(1.15); }
 
+/* Pulse rings */
+.sb-create::before,
+.sb-create::after {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 14px;
+    background: var(--accent);
+    z-index: 0;
+    animation: pulseRing 2.2s cubic-bezier(0.25,0.46,0.45,0.94) infinite;
+}
+.sb-create::after { animation-delay: 1.1s; }
+
+@keyframes pulseRing {
+    0%   { transform: scale(1);    opacity: 0.55; }
+    80%  { transform: scale(1.75); opacity: 0; }
+    100% { transform: scale(1.75); opacity: 0; }
+}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
     font-family: var(--font);
@@ -45,109 +71,64 @@ html, body {
     height: 100%;
     overflow: hidden;
 }
-
 .shell { display: flex; height: 100vh; background: #111111; }
 
-/* ══════════════════════════════════════════════════════
-   SIDEBAR — Admin style merged into requestor
-══════════════════════════════════════════════════════ */
+/* ── SIDEBAR ─────────────────────────────────── */
 .sidebar {
-    width: var(--sb-w);
-    min-width: var(--sb-w);
-    flex-shrink: 0;
+    width: var(--sb-w); min-width: var(--sb-w); flex-shrink: 0;
     background: #111827;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 18px 12px 18px;
-    gap: 0;
-    z-index: 200;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 18px 12px 18px; gap: 0; z-index: 200;
 }
 
-/* Brand/Logo — same as admin sb-brand */
+/* Navy logo — same as admin */
 .sidebar__logo {
     width: var(--sb-inner); height: var(--sb-inner);
-    border-radius: 16px;
-    background: var(--accent);
+    border-radius: 16px; background: var(--navy);
     display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(59,110,245,0.45);
-    margin-bottom: 20px;
-    text-decoration: none; overflow: hidden;
-    transition: transform .2s;
+    flex-shrink: 0; box-shadow: 0 4px 16px rgba(0,35,102,0.5);
+    margin-bottom: 20px; text-decoration: none; transition: transform .2s;
 }
 .sidebar__logo:hover { transform: scale(1.06); }
-.sidebar__logo img { width: 28px; height: 28px; object-fit: contain; }
-.sidebar__logo-text { font-size: 15px; font-weight: 800; color: white; }
+.sidebar__logo svg { color: white; }
 
-/* ── Grouped pill container — the key admin detail */
 .sb-group {
-    background: #1e2a3a;
-    border-radius: 20px;
-    padding: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    width: var(--sb-inner);
-    flex-shrink: 0;
+    background: #1e2a3a; border-radius: 20px;
+    padding: 6px; display: flex; flex-direction: column;
+    gap: 2px; width: var(--sb-inner); flex-shrink: 0;
 }
-
 .sb-spacer { flex: 1; }
 
-/* ── Individual nav item — exact admin style */
 .sb-item {
-    position: relative;
-    width: 44px; height: 44px;
-    border-radius: 14px;
+    position: relative; width: 44px; height: 44px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.38);
-    text-decoration: none;
-    transition: all .2s cubic-bezier(.34,1.4,.64,1);
-    cursor: pointer; flex-shrink: 0;
+    color: rgba(255,255,255,0.38); text-decoration: none;
+    transition: all .2s cubic-bezier(.34,1.4,.64,1); cursor: pointer; flex-shrink: 0;
 }
 .sb-item svg { transition: transform .2s cubic-bezier(.34,1.4,.64,1); }
-.sb-item:hover {
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.85);
-}
+.sb-item:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
 .sb-item:hover svg { transform: scale(1.15); }
-
-/* Per-icon hover colors */
 .sb-item--dashboard:hover { color: #7da8ff !important; }
 .sb-item--requests:hover  { color: #6ee7b7 !important; }
 .sb-item--calendar:hover  { color: #c084fc !important; }
 .sb-item--notifs:hover    { color: #fbbf24 !important; }
-.sb-item--profile:hover   { color: #fca5a5 !important; }
-.sb-item--create:hover    { color: #86efac !important; }
-
-/* Active states — per-icon colored backgrounds */
 .sb-item.active { color: white; box-shadow: 0 3px 12px rgba(0,0,0,0.3); }
 .sb-item.active svg { transform: scale(1.05); }
 .sb-item--dashboard.active { background: rgba(59,110,245,0.28); }
 .sb-item--requests.active  { background: rgba(16,185,129,0.25); }
 .sb-item--calendar.active  { background: rgba(168,85,247,0.25); }
 .sb-item--notifs.active    { background: rgba(245,158,11,0.25); }
-.sb-item--profile.active   { background: rgba(239,68,68,0.22); }
-
-/* Amber left bar on active — admin signature */
 .sb-item.active::before {
-    content: ''; position: absolute;
-    left: -6px; top: 28%; height: 44%;
-    width: 3px; border-radius: 0 3px 3px 0;
-    background: #f59e0b;
+    content: ''; position: absolute; left: -6px; top: 28%; height: 44%;
+    width: 3px; border-radius: 0 3px 3px 0; background: var(--amber);
 }
-
-/* Notif dot */
 .sb-item__dot {
     position: absolute; top: 8px; right: 8px;
     width: 7px; height: 7px; background: #ef4444;
     border-radius: 50%; border: 2px solid #111827;
 }
-
-/* ── Tooltip — admin style with arrow */
 .sb-label {
-    position: absolute;
-    left: calc(100% + 16px); top: 50%;
+    position: absolute; left: calc(100% + 16px); top: 50%;
     transform: translateY(-50%) scale(0.9) translateX(-6px);
     background: #0d1b3e; color: white;
     font-size: 11.5px; font-weight: 600; font-family: var(--font);
@@ -157,18 +138,16 @@ html, body {
     box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 9999;
 }
 .sb-label::before {
-    content: ''; position: absolute;
-    left: -5px; top: 50%; transform: translateY(-50%);
-    border: 5px solid transparent;
-    border-right-color: #0d1b3e; border-left: 0;
+    content: ''; position: absolute; left: -5px; top: 50%; transform: translateY(-50%);
+    border: 5px solid transparent; border-right-color: #0d1b3e; border-left: 0;
 }
 .sb-item:hover .sb-label,
 .sb-foot-item:hover .sb-label { opacity: 1; transform: translateY(-50%) scale(1) translateX(0); }
 
-/* MINI CALENDAR — stays same as before */
+/* Mini calendar */
 .sidebar__cal {
     margin: 10px 0 14px; padding: 12px 8px;
-    background: var(--navy); border-radius: 14px; width: var(--sb-inner);
+    background: #1e2a3a; border-radius: 14px; width: var(--sb-inner);
     display: flex; flex-direction: column; align-items: center; gap: 5px;
 }
 .cal__month   { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.4); }
@@ -178,28 +157,22 @@ html, body {
 .cal__dot     { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); opacity: 0.6; }
 .cal__dot:first-child { opacity: 1; }
 
-/* ── Footer items — admin sb-foot style */
-.sb-foot {
-    display: flex; flex-direction: column; align-items: center;
-    gap: 6px; width: var(--sb-inner); flex-shrink: 0;
-}
+.sb-foot { display: flex; flex-direction: column; align-items: center; gap: 6px; width: var(--sb-inner); flex-shrink: 0; }
 
-/* Create button (+ button in bottom group) */
+/* Create button */
 .sb-create {
     width: 44px; height: 44px; border-radius: 14px;
     background: var(--accent); color: white;
     display: flex; align-items: center; justify-content: center;
     text-decoration: none; transition: all .2s cubic-bezier(.34,1.4,.64,1);
-    box-shadow: 0 4px 14px rgba(59,110,245,0.5);
-    position: relative;
+    box-shadow: 0 4px 14px rgba(59,110,245,0.5); position: relative;
 }
 .sb-create:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(59,110,245,0.6); }
-.sb-create svg { transition: transform .2s cubic-bezier(.34,1.4,.64,1); }
 .sb-create:hover svg { transform: scale(1.15) rotate(90deg); }
+.sb-create svg { transition: transform .2s cubic-bezier(.34,1.4,.64,1); }
 
 .sb-foot-item {
-    position: relative;
-    width: 44px; height: 44px; border-radius: 14px;
+    position: relative; width: 44px; height: 44px; border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
     color: rgba(255,255,255,0.35); cursor: pointer;
     background: none; border: none;
@@ -209,16 +182,14 @@ html, body {
 .sb-foot-item:hover svg { transform: scale(1.12); }
 .sb-foot-item svg { transition: transform .2s; }
 
-/* ── MAIN WRAPPER ────────────────────── */
+/* ── MAIN WRAPPER ──────────────────────────── */
 .main-wrapper {
-    flex: 1; background: #e8ecf4;
-    border-radius: var(--radius-xl);
+    flex: 1; background: #e8ecf4; border-radius: var(--radius-xl);
     margin: 10px 10px 10px 0;
-    display: flex; flex-direction: column;
-    overflow: hidden; min-width: 0;
+    display: flex; flex-direction: column; overflow: hidden; min-width: 0;
 }
 
-/* ── TOPBAR ──────────────────────────── */
+/* ── TOPBAR ──────────────────────────────── */
 .topbar {
     height: var(--topbar-h); background: var(--card-bg);
     border-bottom: 1px solid var(--border);
@@ -227,33 +198,87 @@ html, body {
     border-radius: var(--radius-xl) var(--radius-xl) 0 0;
 }
 .topbar__title { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
-.topbar__search { flex: 1; max-width: 320px; position: relative; margin: 0 auto; }
-.topbar__search input {
-    width: 100%; height: 38px; border: 1.5px solid var(--border); border-radius: 20px;
-    padding: 0 14px 0 38px; font-size: 13px; font-family: var(--font);
-    background: #f4f6fb; outline: none; color: var(--text); transition: border-color .15s;
-}
-.topbar__search input::placeholder { color: var(--text-faint); }
-.topbar__search input:focus { border-color: var(--accent); background: white; }
-.topbar__search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--text-faint); pointer-events: none; }
-.topbar__search button[type="submit"] { display: none; }
-
 .topbar__actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-.topbar__icon-btn {
+
+/* ── NOTIFICATION BELL ─────────────────── */
+.notif-wrap { position: relative; }
+.notif-btn {
     position: relative; width: 38px; height: 38px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     background: #f4f6fb; border: 1.5px solid var(--border);
-    cursor: pointer; color: var(--text-muted); text-decoration: none; transition: all .15s;
+    cursor: pointer; color: var(--text-muted); transition: all .15s;
 }
-.topbar__icon-btn:hover { background: var(--border); color: var(--text); }
-.topbar__icon-btn--active { background: var(--accent-dim); border-color: rgba(59,110,245,0.25); color: var(--accent); }
-.topbar__badge {
-    position: absolute; top: 4px; right: 4px;
-    width: 14px; height: 14px; background: #ef4444; color: white;
-    font-size: 8px; font-weight: 700; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid var(--card-bg);
+.notif-btn:hover { background: var(--border); color: var(--text); }
+.notif-badge {
+    position: absolute; top: -4px; right: -4px;
+    min-width: 18px; height: 18px; border-radius: 9px;
+    background: #ef4444; color: white;
+    font-size: 10px; font-weight: 700;
+    display: none; align-items: center; justify-content: center;
+    padding: 0 4px; border: 2px solid var(--card-bg);
 }
+.notif-badge.has-count { display: flex; }
+
+.notif-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 340px; background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px; box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    z-index: 300; overflow: hidden; display: none;
+    animation: dropIn .2s ease;
+}
+.notif-dropdown.open { display: block; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none} }
+
+.notif-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid var(--border);
+    background: #f4f6fb;
+}
+.notif-head__title { font-size: 14px; font-weight: 700; color: var(--text); }
+.notif-head__mark {
+    font-size: 11.5px; font-weight: 600; color: var(--navy-light);
+    cursor: pointer; background: none; border: none; font-family: var(--font); padding: 0;
+}
+.notif-head__mark:hover { text-decoration: underline; }
+
+.notif-list { max-height: 340px; overflow-y: auto; }
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 4px; }
+
+.notif-item {
+    display: flex; align-items: flex-start; gap: 11px;
+    padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.04);
+    cursor: pointer; transition: background .12s; text-decoration: none;
+    position: relative;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: #f4f6fb; }
+.notif-item.unread { background: rgba(0,35,102,0.03); }
+.notif-item.unread::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 3px; background: var(--navy-light); border-radius: 0 3px 3px 0;
+}
+.notif-icon { width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; }
+.notif-icon--request { background: #dbeafe; }
+.notif-icon--comment { background: #dcfce7; }
+.notif-icon--default { background: #f3f4f6; }
+.notif-title { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.notif-msg   { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; line-height: 1.45; }
+.notif-time  { font-size: 10.5px; color: var(--text-faint); margin-top: 3px; }
+.notif-empty {
+    padding: 36px 20px; text-align: center; color: var(--text-faint);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.notif-empty p { font-size: 13px; }
+.notif-footer {
+    padding: 10px 16px; border-top: 1px solid var(--border);
+    text-align: center; background: #f4f6fb;
+}
+.notif-footer a { font-size: 12.5px; font-weight: 600; color: var(--navy-light); text-decoration: none; }
+.notif-footer a:hover { text-decoration: underline; }
+
+/* User chip */
 .topbar__user {
     display: flex; align-items: center; gap: 8px;
     padding: 4px 12px 4px 4px; border: 1.5px solid var(--border); border-radius: 24px;
@@ -270,10 +295,10 @@ html, body {
 .topbar__avatar img { width: 100%; height: 100%; object-fit: cover; }
 .topbar__username { font-size: 13px; font-weight: 600; }
 
-/* ── PAGE CONTENT ────────────────────── */
+/* ── PAGE CONTENT ──────────────────────── */
 .page-content { flex: 1; overflow-y: auto; background: #e8ecf4; }
 
-/* ── SHARED ──────────────────────────── */
+/* ── GLOBAL BADGES ──────────────────────── */
 .badge { display: inline-flex; align-items: center; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
 .badge--approved     { background: #dcfce7; color: #15803d; }
 .badge--posted       { background: #ede9fe; color: #6d28d9; }
@@ -285,7 +310,6 @@ html, body {
 .badge--medium       { background: #fef3c7; color: #b45309; }
 .badge--low          { background: #f3f4f6; color: #4b5563; border: 1px solid #e5e7eb; }
 .tag { display: inline-flex; padding: 2px 8px; border-radius: 5px; font-size: 11px; background: #f3f4f6; color: #374151; }
-
 .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 16px; font-weight: 500; }
 .alert--success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 .alert--error   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
@@ -293,19 +317,20 @@ html, body {
 @yield('head-styles')
 </head>
 <body>
-
 <div class="shell">
 
-    <!-- ── SIDEBAR ── -->
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-
-        {{-- LOGO --}}
+        <!-- Navy logo — same as admin -->
         <a href="{{ route('requestor.dashboard') }}" class="sidebar__logo">
-            <img src="/assets/nupostlogo.png" alt=""
-                 onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\'sidebar__logo-text\'>N</span>'">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
         </a>
 
-        {{-- MAIN NAV GROUP (admin-style pill container) --}}
+        <!-- Main nav group -->
         <div class="sb-group">
             <a href="{{ route('requestor.dashboard') }}"
                class="sb-item sb-item--dashboard {{ request()->routeIs('requestor.dashboard') ? 'active' : '' }}">
@@ -325,65 +350,65 @@ html, body {
             <a href="{{ route('requestor.notifications') }}"
                class="sb-item sb-item--notifs {{ request()->routeIs('requestor.notifications') ? 'active' : '' }}">
                 <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                @if(($unread_count ?? 0) > 0)<span class="sb-item__dot"></span>@endif
+                <span class="sb-item__dot" id="sb-notif-dot" style="display:none;"></span>
                 <span class="sb-label">Notifications</span>
             </a>
         </div>
 
         <div class="sb-spacer"></div>
 
-        {{-- MINI CALENDAR --}}
+        <!-- Mini calendar -->
         <div class="sidebar__cal">
             <div class="cal__month">{{ date('M') }}</div>
             <div class="cal__day-num">{{ date('j') }}</div>
             <div class="cal__weekday">{{ date('D') }}</div>
-            <div class="cal__dots">
-                <div class="cal__dot"></div>
-                <div class="cal__dot"></div>
-                <div class="cal__dot"></div>
-            </div>
+            <div class="cal__dots"><div class="cal__dot"></div><div class="cal__dot"></div><div class="cal__dot"></div></div>
         </div>
 
-        {{-- FOOTER GROUP --}}
+        <!-- Footer -->
         <div class="sb-foot">
-            {{-- Create button --}}
             <a href="{{ route('requestor.requests.create') }}" class="sb-create" style="margin-bottom:6px;">
                 <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 <span class="sb-label">New Request</span>
             </a>
-            {{-- Profile --}}
-            <button class="sb-foot-item sb-foot-item--profile"
-               onclick="window.location='{{ route('requestor.profile') }}'"
-               style="color: {{ request()->routeIs('requestor.profile*') || request()->routeIs('requestor.settings') ? 'rgba(255,255,255,0.85)' : '' }}">
+            <button class="sb-foot-item" onclick="window.location='{{ route('requestor.profile') }}'">
                 <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <span class="sb-label">Profile</span>
             </button>
         </div>
-
     </aside>
 
-    <!-- ── FLOATING MAIN WRAPPER ── -->
+    <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
 
         <header class="topbar">
             <div class="topbar__title">@yield('page-title', 'Dashboard')</div>
-            <div class="topbar__search">
-                <form method="GET" action="{{ route('requestor.requests') }}">
-                    <span class="topbar__search-icon">
-                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    </span>
-                    <input type="text" name="search" placeholder="Search requests..."
-                           value="{{ request()->routeIs('requestor.requests*') ? request('search', '') : '' }}"
-                           autocomplete="off">
-                    <button type="submit"></button>
-                </form>
-            </div>
             <div class="topbar__actions">
-                <a href="{{ route('requestor.notifications') }}"
-                   class="topbar__icon-btn {{ request()->routeIs('requestor.notifications') ? 'topbar__icon-btn--active' : '' }}">
-                    <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                    @if(($unread_count ?? 0) > 0)<span class="topbar__badge">{{ $unread_count > 9 ? '9+' : $unread_count }}</span>@endif
-                </a>
+
+                <!-- NOTIFICATION BELL -->
+                <div class="notif-wrap" id="notif-wrap">
+                    <button class="notif-btn" id="notif-btn" onclick="toggleNotif(event)">
+                        <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span class="notif-badge" id="notif-badge"></span>
+                    </button>
+                    <div class="notif-dropdown" id="notif-dropdown">
+                        <div class="notif-head">
+                            <div class="notif-head__title">Notifications <span id="notif-unread-label" style="font-size:11px;color:var(--text-muted);font-weight:400;"></span></div>
+                            <button class="notif-head__mark" onclick="markAllRead()">Mark all read</button>
+                        </div>
+                        <div class="notif-list" id="notif-list">
+                            <div class="notif-empty">
+                                <svg width="32" height="32" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                                <p>Loading…</p>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <a href="{{ route('requestor.notifications') }}">View all notifications →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- USER CHIP -->
                 <a href="{{ route('requestor.profile') }}" class="topbar__user">
                     <div class="topbar__avatar">
                         @if(isset($auth_user) && $auth_user->profile_photo && file_exists(public_path('uploads/' . $auth_user->profile_photo)))
@@ -402,9 +427,113 @@ html, body {
         </div>
 
     </div>
-
 </div>
 
+<script>
+// ── NOTIFICATION BELL ────────────────────────────────────────────
+const NOTIF_FETCH_URL = '{{ route("requestor.notifications.fetch") }}';
+const NOTIF_READ_URL  = '{{ route("requestor.notifications.markread") }}';
+const CSRF = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+
+let notifOpen = false;
+
+function toggleNotif(e) {
+    e.stopPropagation();
+    notifOpen = !notifOpen;
+    document.getElementById('notif-dropdown').classList.toggle('open', notifOpen);
+    if (notifOpen) loadNotifications();
+}
+
+document.addEventListener('click', function(e) {
+    if (!document.getElementById('notif-wrap').contains(e.target)) {
+        notifOpen = false;
+        document.getElementById('notif-dropdown')?.classList.remove('open');
+    }
+});
+
+function timeAgo(dateStr) {
+    const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+    if (diff < 60)    return 'Just now';
+    if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+    return Math.floor(diff/86400) + 'd ago';
+}
+
+function getIcon(type) {
+    if (type === 'new_request' || type === 'request') return '<div class="notif-icon notif-icon--request">📄</div>';
+    if (type === 'comment'     || type === 'reply')   return '<div class="notif-icon notif-icon--comment">💬</div>';
+    return '<div class="notif-icon notif-icon--default">🔔</div>';
+}
+
+function loadNotifications() {
+    fetch(NOTIF_FETCH_URL, {
+        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF }
+    })
+    .then(r => r.json())
+    .then(data => renderNotifications(data.notifications || [], data.unread_count || 0))
+    .catch(() => {});
+}
+
+function renderNotifications(notifs, unread) {
+    // Badge
+    const badge = document.getElementById('notif-badge');
+    const dot   = document.getElementById('sb-notif-dot');
+    if (unread > 0) {
+        badge.textContent = unread > 99 ? '99+' : unread;
+        badge.classList.add('has-count');
+        if (dot) dot.style.display = 'block';
+    } else {
+        badge.classList.remove('has-count');
+        if (dot) dot.style.display = 'none';
+    }
+
+    const label = document.getElementById('notif-unread-label');
+    if (label) label.textContent = unread > 0 ? `(${unread} new)` : '';
+
+    const list = document.getElementById('notif-list');
+    if (!notifs.length) {
+        list.innerHTML = '<div class="notif-empty"><svg width="32" height="32" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><p>No notifications yet</p></div>';
+        return;
+    }
+
+    list.innerHTML = notifs.slice(0, 12).map(n => {
+        const link = n.request_id ? `/requestor/requests/${n.request_id}/chat` : '/requestor/notifications';
+        return `<a href="${link}" class="notif-item ${!n.is_read ? 'unread' : ''}" onclick="markRead(${n.id}, this)">
+            ${getIcon(n.type)}
+            <div style="flex:1;min-width:0;">
+                <div class="notif-title">${esc(n.title)}</div>
+                <div class="notif-msg">${esc(n.message)}</div>
+                <div class="notif-time">${timeAgo(n.created_at)}</div>
+            </div>
+        </a>`;
+    }).join('');
+}
+
+function markRead(id, el) {
+    fetch(NOTIF_READ_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+        body: JSON.stringify({ id })
+    }).then(() => {
+        el.classList.remove('unread');
+        loadNotifications();
+    });
+}
+
+function markAllRead() {
+    fetch(NOTIF_READ_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+        body: JSON.stringify({ all: true })
+    }).then(() => loadNotifications());
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Poll every 30s
+loadNotifications();
+setInterval(loadNotifications, 30000);
+</script>
 @yield('scripts')
 </body>
 </html>

@@ -94,16 +94,8 @@ html, body { height: 100%; font-family: var(--font-inter); }
             </div>
             <div class="register__field">
                 <label class="register__label">PASSWORD:</label>
-<<<<<<< HEAD
-                <input class="register__input" type="password" name="password" required
-                       placeholder="Min. 8 chars, uppercase, number, symbol">
-            </div>
-            <div class="register__field">
-                <label class="register__label">CONFIRM PASSWORD:</label>
-                <input class="register__input" type="password" name="confirm_password" required placeholder="Re-enter password">
-=======
                 <div style="position:relative;">
-                    <input class="register__input register__input--password" type="password" name="password" id="reg-password" required
+                    <input class="register__input" type="password" name="password" id="reg-password" required
                            placeholder="Min. 8 chars, uppercase, number, symbol" style="padding-right: 40px;">
                     <button type="button" onclick="togglePassword('reg-password', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; display:flex; align-items:center; padding:0;">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -113,12 +105,11 @@ html, body { height: 100%; font-family: var(--font-inter); }
             <div class="register__field">
                 <label class="register__label">CONFIRM PASSWORD:</label>
                 <div style="position:relative;">
-                    <input class="register__input register__input--password" type="password" name="confirm_password" id="reg-confirm" required placeholder="Re-enter password" style="padding-right: 40px;">
+                    <input class="register__input" type="password" name="confirm_password" id="reg-confirm" required placeholder="Re-enter password" style="padding-right: 40px;">
                     <button type="button" onclick="togglePassword('reg-confirm', this)" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#6b7280; display:flex; align-items:center; padding:0;">
                         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
             </div>
             <button class="register__button" type="submit">CREATE ACCOUNT</button>
         </form>
@@ -127,8 +118,6 @@ html, body { height: 100%; font-family: var(--font-inter); }
         </div>
     </section>
 </main>
-<<<<<<< HEAD
-=======
 <script>
 function togglePassword(id, btn) {
     const input = document.getElementById(id);
@@ -142,6 +131,5 @@ function togglePassword(id, btn) {
     }
 }
 </script>
->>>>>>> 43bcf98605ecda6f0ebfbec71433733e161c1f26
 </body>
 </html>

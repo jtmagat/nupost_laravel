@@ -16,16 +16,7 @@
 .alert--success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
 .alert--error   { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
-/* SEARCH BANNER */
-.search-banner {
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px; padding: 10px 14px;
-    margin-bottom: 0; font-size: 13px; color: rgba(255,255,255,0.85);
-}
-.search-banner a { color: #93c5fd; text-decoration: none; font-size: 12px; font-weight: 600; }
-
-/* ── MAIN CARD — dark navy like private calendar ── */
+/* ── MAIN CARD — dark navy ── */
 .card {
     border-radius: 22px;
     overflow: hidden;
@@ -41,6 +32,7 @@
     gap: 10px; flex-wrap: wrap;
     background: rgba(0,0,0,0.15);
 }
+.filter-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .filter-tabs { display: flex; align-items: center; gap: 4px; }
 .filter-tab {
     padding: 7px 16px; border-radius: 10px;
@@ -60,6 +52,37 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+/* ── INLINE SEARCH BOX ── */
+.inline-search {
+    display: flex; align-items: center; gap: 0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px; overflow: hidden;
+    transition: border-color .15s;
+}
+.inline-search:focus-within {
+    border-color: rgba(147,197,253,0.5);
+    background: rgba(255,255,255,0.12);
+}
+.inline-search__icon {
+    padding: 0 10px; color: rgba(255,255,255,0.35);
+    display: flex; align-items: center; flex-shrink: 0;
+}
+.inline-search__input {
+    background: none; border: none; outline: none;
+    font-size: 12.5px; font-family: var(--font);
+    color: white; padding: 8px 0; width: 180px;
+}
+.inline-search__input::placeholder { color: rgba(255,255,255,0.3); }
+.inline-search__clear {
+    padding: 0 10px; color: rgba(255,255,255,0.3);
+    cursor: pointer; display: none; align-items: center;
+    background: none; border: none; font-size: 14px;
+    transition: color .15s;
+}
+.inline-search__clear:hover { color: rgba(255,255,255,0.7); }
+.inline-search__clear.visible { display: flex; }
+
 .view-toggle { display: flex; align-items: center; gap: 4px; }
 .view-btn {
     width: 32px; height: 32px; border-radius: 8px;
@@ -76,8 +99,13 @@
     padding: 10px 20px 8px;
     font-size: 12px; color: rgba(255,255,255,0.4);
     border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: space-between;
 }
 .count-row span { font-weight: 700; color: rgba(255,255,255,0.7); }
+.search-active-label {
+    font-size: 11.5px; color: rgba(147,197,253,0.8);
+    font-weight: 500;
+}
 
 /* TABLE */
 .requests-table { width: 100%; border-collapse: collapse; }
@@ -96,6 +124,9 @@
 .requests-table tbody tr:hover { background: rgba(255,255,255,0.06); }
 .requests-table td { padding: 13px 16px; vertical-align: middle; font-size: 12.5px; }
 
+/* Highlight match */
+.highlight { background: rgba(147,197,253,0.35); border-radius: 3px; padding: 0 2px; color: white; }
+
 .req-col { display: flex; align-items: center; gap: 10px; }
 .req-thumb {
     width: 50px; height: 38px; border-radius: 8px;
@@ -110,7 +141,7 @@
 .req-title { font-size: 13px; font-weight: 600; color: white; }
 .req-desc  { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* BADGES — same colors, adjusted for dark bg */
+/* BADGES */
 .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
 .badge--approved     { background: rgba(16,185,129,0.2);  color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); }
 .badge--posted       { background: rgba(139,92,246,0.2);  color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); }
@@ -204,11 +235,11 @@
     display: flex; align-items: center; justify-content: center;
     text-decoration: none; transition: all .15s; font-family: var(--font);
 }
-.page-btn:hover:not(.page-btn--active):not(:disabled) {
+.page-btn:hover:not(.page-btn--active):not([disabled]) {
     border-color: rgba(147,197,253,0.4); color: #93c5fd; background: rgba(59,110,245,0.15);
 }
 .page-btn--active { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.35); }
-.page-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.page-btn[disabled] { opacity: 0.25; cursor: not-allowed; }
 .page-btn--dots { cursor: default; border-color: transparent; background: transparent; color: rgba(255,255,255,0.3); }
 
 /* DELETE MODAL */
@@ -269,13 +300,28 @@
 
         {{-- FILTER BAR --}}
         <div class="filter-bar">
-            <div class="filter-tabs">
-                <a href="{{ route('requestor.requests', ['filter' => 'all',      'search' => $search]) }}" class="filter-tab {{ $filter === 'all'      ? 'filter-tab--active' : '' }}">All</a>
-                <a href="{{ route('requestor.requests', ['filter' => 'pending',  'search' => $search]) }}" class="filter-tab {{ $filter === 'pending'  ? 'filter-tab--active' : '' }}">Pending</a>
-                <a href="{{ route('requestor.requests', ['filter' => 'seen',     'search' => $search]) }}" class="filter-tab {{ $filter === 'seen'     ? 'filter-tab--active' : '' }}">Seen</a>
-                <a href="{{ route('requestor.requests', ['filter' => 'approved', 'search' => $search]) }}" class="filter-tab {{ $filter === 'approved' ? 'filter-tab--active' : '' }}">Approved</a>
-                <a href="{{ route('requestor.requests', ['filter' => 'posted',   'search' => $search]) }}" class="filter-tab {{ $filter === 'posted'   ? 'filter-tab--active' : '' }}">Posted</a>
+            <div class="filter-left">
+                <div class="filter-tabs">
+                    <a href="{{ route('requestor.requests', ['filter' => 'all']) }}"      class="filter-tab {{ $filter === 'all'      ? 'filter-tab--active' : '' }}">All</a>
+                    <a href="{{ route('requestor.requests', ['filter' => 'pending']) }}"  class="filter-tab {{ $filter === 'pending'  ? 'filter-tab--active' : '' }}">Pending</a>
+                    <a href="{{ route('requestor.requests', ['filter' => 'seen']) }}"     class="filter-tab {{ $filter === 'seen'     ? 'filter-tab--active' : '' }}">Seen</a>
+                    <a href="{{ route('requestor.requests', ['filter' => 'approved']) }}" class="filter-tab {{ $filter === 'approved' ? 'filter-tab--active' : '' }}">Approved</a>
+                    <a href="{{ route('requestor.requests', ['filter' => 'posted']) }}"   class="filter-tab {{ $filter === 'posted'   ? 'filter-tab--active' : '' }}">Posted</a>
+                </div>
+
+                {{-- INLINE LIVE SEARCH --}}
+                <div class="inline-search">
+                    <span class="inline-search__icon">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    </span>
+                    <input class="inline-search__input" id="live-search-input"
+                           type="text" placeholder="Search requests…"
+                           autocomplete="off" value="{{ $search ?? '' }}">
+                    <button class="inline-search__clear {{ ($search ?? '') !== '' ? 'visible' : '' }}"
+                            id="live-search-clear" onclick="clearSearch()">✕</button>
+                </div>
             </div>
+
             <div class="view-toggle">
                 <button class="view-btn" id="btn-list" onclick="setView('list')" title="List view">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -286,17 +332,14 @@
             </div>
         </div>
 
-        @if($search !== '')
-        <div style="padding:10px 20px 0;">
-            <div class="search-banner">
-                <span>Results for <strong>"{{ $search }}"</strong> — {{ $total }} found</span>
-                <a href="{{ route('requestor.requests', ['filter' => $filter]) }}">✕ Clear</a>
+        <div class="count-row">
+            <div>Showing <span id="visible-count">{{ $total }}</span> request<span id="count-plural">{{ $total !== 1 ? 's' : '' }}</span></div>
+            <div class="search-active-label" id="search-label" style="{{ ($search ?? '') !== '' ? '' : 'display:none;' }}">
+                Searching: "{{ $search ?? '' }}"
             </div>
         </div>
-        @endif
 
-        <div class="count-row">Showing <span>{{ $total }}</span> request{{ $total !== 1 ? 's' : '' }}</div>
-
+        {{-- ALL ROWS (JS does the filtering + pagination) --}}
         @if($total > 0)
 
         {{-- LIST VIEW --}}
@@ -312,7 +355,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="list-tbody">
                 @foreach($requests as $req)
                     @php
                         $status_raw   = strtolower($req->status);
@@ -329,7 +372,10 @@
                         $thumb      = $req->first_media;
                         $is_pending = $req->status === 'Pending Review';
                     @endphp
-                    <tr onclick="window.location='{{ route('requestor.requests.chat', $req->id) }}'">
+                    <tr class="req-row"
+                        data-title="{{ strtolower($req->title) }}"
+                        data-desc="{{ strtolower($req->description) }}"
+                        onclick="window.location='{{ route('requestor.requests.chat', $req->id) }}'">
                         <td>
                             <div class="req-col">
                                 @if($thumb)
@@ -340,8 +386,8 @@
                                     <div class="req-thumb-placeholder">📄</div>
                                 @endif
                                 <div>
-                                    <div class="req-title">{{ $req->title }}</div>
-                                    <div class="req-desc">{{ Str::limit($req->description, 80) }}</div>
+                                    <div class="req-title" data-original="{{ $req->title }}">{{ $req->title }}</div>
+                                    <div class="req-desc" data-original="{{ Str::limit($req->description, 80) }}">{{ Str::limit($req->description, 80) }}</div>
                                 </div>
                             </div>
                         </td>
@@ -366,7 +412,7 @@
 
         {{-- GRID VIEW --}}
         <div id="view-grid" style="display:none;">
-            <div class="requests-grid">
+            <div class="requests-grid" id="grid-container">
             @foreach($requests as $req)
                 @php
                     $status_raw   = strtolower($req->status);
@@ -383,7 +429,10 @@
                     $thumb      = $req->first_media;
                     $is_pending = $req->status === 'Pending Review';
                 @endphp
-                <div class="grid-card" onclick="window.location='{{ route('requestor.requests.chat', $req->id) }}'">
+                <div class="grid-card req-row"
+                     data-title="{{ strtolower($req->title) }}"
+                     data-desc="{{ strtolower($req->description) }}"
+                     onclick="window.location='{{ route('requestor.requests.chat', $req->id) }}'">
                     @if($thumb)
                         <img class="grid-card__thumb" src="/uploads/{{ $thumb }}" alt=""
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -392,8 +441,8 @@
                         <div class="grid-card__thumb-placeholder">📄</div>
                     @endif
                     <div class="grid-card__body">
-                        <div class="grid-card__title">{{ $req->title }}</div>
-                        <div class="grid-card__desc">{{ $req->description }}</div>
+                        <div class="grid-card__title" data-original="{{ $req->title }}">{{ $req->title }}</div>
+                        <div class="grid-card__desc" data-original="{{ $req->description }}">{{ $req->description }}</div>
                         <div class="grid-card__footer">
                             <span class="badge badge--{{ $status_class }}">{{ $req->status }}</span>
                             <span class="badge badge--{{ $priority_class }}">{{ strtoupper($req->priority) }}</span>
@@ -412,27 +461,31 @@
             </div>
         </div>
 
+        {{-- EMPTY SEARCH STATE (hidden by default) --}}
+        <div id="empty-search-state" style="display:none;">
+            <div class="empty-state">
+                <div class="empty-state__icon">
+                    <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <p>No results found. Try a different keyword.</p>
+            </div>
+        </div>
+
         {{-- PAGINATION --}}
-        @if($total > 10)
-        <div class="pagination-wrap" id="pagination-wrap">
+        <div class="pagination-wrap" id="pagination-wrap" style="display:none;">
             <div class="pagination-info">
                 Page <strong id="page-cur">1</strong> of <strong id="page-last">1</strong>
+                &nbsp;·&nbsp; <strong id="page-range"></strong>
             </div>
             <div class="pagination-btns" id="pagination-btns"></div>
         </div>
-        @endif
 
         @else
             <div class="empty-state">
                 <div class="empty-state__icon">
                     <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </div>
-                @if($search !== '')
-                    <p>No results for "<strong>{{ $search }}</strong>"</p>
-                    <a href="{{ route('requestor.requests') }}">Clear search</a>
-                @else
-                    <p>No requests yet. <a href="{{ route('requestor.requests.create') }}">Create one →</a></p>
-                @endif
+                <p>No requests yet. <a href="{{ route('requestor.requests.create') }}">Create one →</a></p>
             </div>
         @endif
 
@@ -458,69 +511,211 @@
 
 @section('scripts')
 <script>
+// ── VIEW TOGGLE ────────────────────────────────────────────────────
 function setView(v) {
-    const listEl  = document.getElementById('view-list');
-    const gridEl  = document.getElementById('view-grid');
-    const btnList = document.getElementById('btn-list');
-    const btnGrid = document.getElementById('btn-grid');
-    if (v === 'grid') {
-        listEl.style.display = 'none'; gridEl.style.display = 'block';
-        btnList.classList.remove('view-btn--active'); btnGrid.classList.add('view-btn--active');
-    } else {
-        listEl.style.display = 'block'; gridEl.style.display = 'none';
-        btnGrid.classList.remove('view-btn--active'); btnList.classList.add('view-btn--active');
-    }
+    document.getElementById('view-list').style.display = v === 'list' ? 'block' : 'none';
+    document.getElementById('view-grid').style.display = v === 'grid' ? 'block' : 'none';
+    document.getElementById('btn-list').classList.toggle('view-btn--active', v === 'list');
+    document.getElementById('btn-grid').classList.toggle('view-btn--active', v === 'grid');
     localStorage.setItem('nupost_view', v);
+    renderPage(currentPage);
 }
 const savedView = localStorage.getItem('nupost_view') || 'list';
-setView(savedView);
 
-const PER_PAGE = 10;
+// ── LIVE SEARCH + PAGINATION ───────────────────────────────────────
+const PER_PAGE = 5;
 let currentPage = 1;
-function getRows() {
-    return {
-        listRows:  Array.from(document.querySelectorAll('#view-list tbody tr')),
-        gridCards: Array.from(document.querySelectorAll('#view-grid .grid-card'))
-    };
+let filteredRows = []; // holds currently visible/matching rows
+
+// All list rows and grid cards paired together
+const allListRows  = Array.from(document.querySelectorAll('#list-tbody .req-row'));
+const allGridCards = Array.from(document.querySelectorAll('#grid-container .req-row'));
+
+function escapeRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
+
+function highlightText(original, query) {
+    if (!query) return original;
+    const re = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+    return original.replace(re, '<mark class="highlight">$1</mark>');
+}
+
+function applySearch(query) {
+    const q = query.trim().toLowerCase();
+    filteredRows = [];
+
+    allListRows.forEach((row, i) => {
+        const title = row.dataset.title || '';
+        const desc  = row.dataset.desc  || '';
+        const match = !q || title.includes(q) || desc.includes(q);
+
+        if (match) filteredRows.push(i);
+
+        // highlight in list view
+        const titleEl = row.querySelector('.req-title');
+        const descEl  = row.querySelector('.req-desc');
+        if (titleEl) titleEl.innerHTML = q ? highlightText(titleEl.dataset.original || titleEl.textContent, q) : (titleEl.dataset.original || titleEl.textContent);
+        if (descEl)  descEl.innerHTML  = q ? highlightText(descEl.dataset.original  || descEl.textContent,  q) : (descEl.dataset.original  || descEl.textContent);
+    });
+
+    allGridCards.forEach((card, i) => {
+        const title = card.dataset.title || '';
+        const desc  = card.dataset.desc  || '';
+
+        // highlight in grid view
+        const titleEl = card.querySelector('.grid-card__title');
+        const descEl  = card.querySelector('.grid-card__desc');
+        const q_orig  = query.trim();
+        if (titleEl) titleEl.innerHTML = q_orig ? highlightText(titleEl.dataset.original || titleEl.textContent, q_orig) : (titleEl.dataset.original || titleEl.textContent);
+        if (descEl)  descEl.innerHTML  = q_orig ? highlightText(descEl.dataset.original  || descEl.textContent,  q_orig) : (descEl.dataset.original  || descEl.textContent);
+    });
+
+    // Update search label
+    const searchLabel = document.getElementById('search-label');
+    const clearBtn    = document.getElementById('live-search-clear');
+    if (q) {
+        searchLabel.textContent = `Searching: "${query.trim()}"`;
+        searchLabel.style.display = '';
+        clearBtn.classList.add('visible');
+    } else {
+        searchLabel.style.display = 'none';
+        clearBtn.classList.remove('visible');
+    }
+
+    currentPage = 1;
+    renderPage(1);
+}
+
 function renderPage(page) {
-    const { listRows, gridCards } = getRows();
-    const total = listRows.length;
+    const total = filteredRows.length;
     const last  = Math.max(1, Math.ceil(total / PER_PAGE));
     currentPage = Math.max(1, Math.min(page, last));
+
     const start = (currentPage - 1) * PER_PAGE;
     const end   = start + PER_PAGE;
-    listRows.forEach((r, i)  => r.style.display    = (i >= start && i < end) ? '' : 'none');
-    gridCards.forEach((c, i) => c.style.display = (i >= start && i < end) ? '' : 'none');
-    const curEl  = document.getElementById('page-cur');
-    const lastEl = document.getElementById('page-last');
-    if (curEl)  curEl.textContent  = currentPage;
-    if (lastEl) lastEl.textContent = last;
+
+    // Show/hide list rows
+    allListRows.forEach((row, i) => {
+        const inFilter = filteredRows.includes(i);
+        const inPage   = inFilter && filteredRows.indexOf(i) >= start && filteredRows.indexOf(i) < end;
+        row.style.display = inPage ? '' : 'none';
+    });
+
+    // Show/hide grid cards (mirror same indices)
+    allGridCards.forEach((card, i) => {
+        const inFilter = filteredRows.includes(i);
+        const inPage   = inFilter && filteredRows.indexOf(i) >= start && filteredRows.indexOf(i) < end;
+        card.style.display = inPage ? '' : 'none';
+    });
+
+    // Count display
+    const visibleCount = document.getElementById('visible-count');
+    const countPlural  = document.getElementById('count-plural');
+    if (visibleCount) { visibleCount.textContent = total; }
+    if (countPlural)  { countPlural.textContent  = total !== 1 ? 's' : ''; }
+
+    // Empty search state
+    const emptySearch = document.getElementById('empty-search-state');
+    const listView    = document.getElementById('view-list');
+    const gridView    = document.getElementById('view-grid');
+    const currentView = localStorage.getItem('nupost_view') || 'list';
+
+    if (total === 0) {
+        if (emptySearch) emptySearch.style.display = 'block';
+        if (currentView === 'list' && listView) listView.style.display = 'none';
+        if (currentView === 'grid' && gridView) gridView.style.display = 'none';
+    } else {
+        if (emptySearch) emptySearch.style.display = 'none';
+        if (currentView === 'list' && listView) listView.style.display = 'block';
+        if (currentView === 'grid' && gridView) gridView.style.display = 'block';
+    }
+
+    // Pagination
+    const paginWrap = document.getElementById('pagination-wrap');
+    const curEl     = document.getElementById('page-cur');
+    const lastEl    = document.getElementById('page-last');
+    const rangeEl   = document.getElementById('page-range');
+
+    if (paginWrap) {
+        paginWrap.style.display = total > PER_PAGE ? 'flex' : 'none';
+    }
+    if (curEl)   curEl.textContent  = currentPage;
+    if (lastEl)  lastEl.textContent = last;
+    if (rangeEl) {
+        const from = total === 0 ? 0 : start + 1;
+        const to   = Math.min(end, total);
+        rangeEl.textContent = `${from}–${to} of ${total}`;
+    }
+
     const wrap = document.getElementById('pagination-btns');
     if (!wrap) return;
+
     let pages = [];
-    if (last <= 7) { pages = Array.from({length: last}, (_, i) => i + 1); }
-    else {
+    if (last <= 7) {
+        pages = Array.from({length: last}, (_, i) => i + 1);
+    } else {
         pages = [1];
         if (currentPage > 3) pages.push('...');
         for (let p = Math.max(2, currentPage - 1); p <= Math.min(last - 1, currentPage + 1); p++) pages.push(p);
         if (currentPage < last - 2) pages.push('...');
         pages.push(last);
     }
+
     const prevDis = currentPage === 1    ? 'disabled' : '';
     const nextDis = currentPage === last ? 'disabled' : '';
     let html = `<button class="page-btn" ${prevDis} onclick="renderPage(${currentPage - 1})"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>`;
     pages.forEach(p => {
-        if (p === '...') { html += `<span class="page-btn page-btn--dots">···</span>`; }
-        else { const act = p === currentPage ? 'page-btn--active' : ''; html += `<button class="page-btn ${act}" onclick="renderPage(${p})">${p}</button>`; }
+        if (p === '...') {
+            html += `<span class="page-btn page-btn--dots">···</span>`;
+        } else {
+            const act = p === currentPage ? 'page-btn--active' : '';
+            html += `<button class="page-btn ${act}" onclick="renderPage(${p})">${p}</button>`;
+        }
     });
     html += `<button class="page-btn" ${nextDis} onclick="renderPage(${currentPage + 1})"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>`;
     wrap.innerHTML = html;
 }
+
+function clearSearch() {
+    const input = document.getElementById('live-search-input');
+    input.value = '';
+    applySearch('');
+    input.focus();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('pagination-wrap')) renderPage(1);
+    // init filtered rows = all rows
+    allListRows.forEach((_, i) => filteredRows.push(i));
+
+    // init view
+    setView(savedView);
+
+    // restore saved view properly
+    const v = localStorage.getItem('nupost_view') || 'list';
+    document.getElementById('view-list').style.display = v === 'list' ? 'block' : 'none';
+    document.getElementById('view-grid').style.display = v === 'grid' ? 'block' : 'none';
+    document.getElementById('btn-list').classList.toggle('view-btn--active', v === 'list');
+    document.getElementById('btn-grid').classList.toggle('view-btn--active', v === 'grid');
+
+    // render first page
+    renderPage(1);
+
+    // live search — trigger on 1 character
+    let debounceTimer;
+    const searchInput = document.getElementById('live-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => applySearch(this.value), 300);
+        });
+        // also trigger on initial load if there's a prefilled search
+        if (searchInput.value.trim()) applySearch(searchInput.value);
+    }
 });
 
+// ── DELETE MODAL ─────────────────────────────────────────────────
 function confirmDelete(id, title) {
     document.getElementById('delete-title').textContent = title;
     document.getElementById('delete-form').action = '/requestor/requests/' + id;
