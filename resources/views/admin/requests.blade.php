@@ -275,7 +275,7 @@ td { padding:13px 16px; font-size:12.5px; vertical-align:middle; }
                     <td class="date-text">{{ $req->created_at->format('M j, Y') }}</td>
                     <td>
                         <div class="action-wrap">
-                            <form method="POST" action="{{ route('admin.requests.status') }}" style="display:flex;align-items:center;gap:5px;" onsubmit="return confirmStatus(this)">
+                            <form method="POST" action="{{ route('admin.requests.status') }}" style="display:flex;align-items:center;gap:5px;" onsubmit="confirmStatus(event, this)">
                                 @csrf
                                 <input type="hidden" name="request_id" value="{{ $req->id }}">
                                 <select class="status-select" name="status">
@@ -466,7 +466,32 @@ async function sendMessage() {
     btn.disabled = false;
 }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
-function confirmStatus(f) { return confirm(`Update status to "${f.querySelector('select[name="status"]').value}"?`); }
+
+function confirmStatus(e, f) {
+    e.preventDefault();
+    const status = f.querySelector('select[name="status"]').value;
+    
+    Swal.fire({
+        title: 'Update Status?',
+        html: `Are you sure you want to change the status to <strong>${status}</strong>?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#002366',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, update it',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            popup: 'rounded-xl',
+            confirmButton: 'rounded-lg px-4 py-2 font-semibold',
+            cancelButton: 'rounded-lg px-4 py-2 font-semibold'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            f.submit();
+        }
+    });
+}
+
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 setTimeout(() => document.getElementById('toast')?.remove(), 3000);
 </script>

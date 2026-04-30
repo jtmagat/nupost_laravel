@@ -111,7 +111,6 @@ class OtpController extends Controller
         $otp        = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expires_at = now()->addMinutes(10);
 
-        OtpCode::where('user_id', $user_id)->delete();
         OtpCode::create([
             'user_id'    => $user_id,
             'email'      => $email,

@@ -291,7 +291,7 @@ html, body {
         <a href="{{ route('admin.analytics') }}"
            class="sb-item sb-item--analytics {{ request()->routeIs('admin.analytics') ? 'active' : '' }}">
             <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="sb-label">Analytics</span>
+            <span class="sb-label">Visualization</span>
         </a>
     </div>
 
@@ -387,6 +387,7 @@ if(chip && dd){
     document.addEventListener('click', () => dd.classList.remove('open'));
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @yield('scripts')
 </body>
 </html>

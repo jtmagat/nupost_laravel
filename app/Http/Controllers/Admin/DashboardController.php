@@ -20,8 +20,12 @@ class DashboardController extends Controller
 
         $recent = PostRequest::orderBy('created_at', 'desc')->limit(10)->get();
 
+        // Fetch Facebook / Meta Graph API data
+        $fbController = new FacebookAnalyticsController();
+        $fb = $fbController->getData();
+
         return view('admin.dashboard', compact(
-            'total', 'pending', 'review', 'approved', 'posted', 'rejected', 'users', 'recent'
+            'total', 'pending', 'review', 'approved', 'posted', 'rejected', 'users', 'recent', 'fb'
         ));
     }
 }

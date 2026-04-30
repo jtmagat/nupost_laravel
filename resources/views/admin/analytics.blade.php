@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Analytics')
+@section('title', 'Visualization')
 
 @section('head-styles')
 <style>
@@ -102,6 +102,21 @@
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
 }
 .fb-ph p { font-size:10.5px; color:#93c5fd; font-weight:500; }
+
+/* PERIOD SELECTOR */
+.fb-period-group {
+    display:flex; gap:0; background:var(--cream-dark); border-radius:12px;
+    padding:3px; border:1px solid rgba(0,0,0,0.06);
+}
+.fb-period-btn {
+    padding:9px 18px; border-radius:10px; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); text-decoration:none; transition:all .18s;
+    white-space:nowrap; text-align:center;
+}
+.fb-period-btn:hover { color:var(--ink); background:rgba(255,255,255,0.5); }
+.fb-period-btn.active {
+    background:var(--navy); color:white; box-shadow:0 2px 8px rgba(0,35,102,0.25);
+}
 </style>
 @endsection
 
@@ -163,11 +178,11 @@
 
 <div class="page-hd">
     <div>
-        <div class="page-hd__title">Analytics</div>
+        <div class="page-hd__title">Visualization</div>
         <div class="page-hd__sub">Request trends, platform breakdown & performance overview</div>
     </div>
     @if($fb_configured)
-    <a href="{{ route('admin.analytics.refresh') }}" style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--navy);background:var(--navy-pale);border:1.5px solid rgba(0,35,102,0.15);padding:8px 16px;border-radius:10px;text-decoration:none;transition:all .15s;">
+    <a href="{{ route('admin.analytics.refresh', ['period' => request()->query('period', '7d')]) }}" style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--navy);background:var(--navy-pale);border:1.5px solid rgba(0,35,102,0.15);padding:8px 16px;border-radius:10px;text-decoration:none;transition:all .15s;">
         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         Refresh FB Data
     </a>
@@ -406,7 +421,7 @@
 {{-- FACEBOOK / META SECTION --}}
 <div class="fb-divider">
     <div class="fb-divider__line"></div>
-    <div class="fb-divider__label">📘 Facebook & Meta Analytics</div>
+    <div class="fb-divider__label">📘 Facebook & Meta Visualization</div>
     <div class="fb-divider__line"></div>
 </div>
 
@@ -421,28 +436,48 @@
             </div>
         </div>
     @else
-        <div class="fb-banner">
-            <div class="fb-banner__icon">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-            </div>
-            <div>
-                <div class="fb-banner__title">{{ $fb['pageInfo']['name'] ?? 'Facebook Page' }}</div>
-                <div class="fb-banner__sub">
-                    Likes: <strong>{{ number_format($fb['pageInfo']['fan_count'] ?? 0) }}</strong> &nbsp;·&nbsp;
-                    Followers: <strong>{{ number_format($fb['pageInfo']['followers_count'] ?? 0) }}</strong>
+        {{-- Page Banner + Period Selector --}}
+        <div style="display:flex;align-items:stretch;gap:14px;margin-bottom:16px;flex-wrap:wrap;">
+            <div class="fb-banner" style="flex:1;margin-bottom:0;min-width:300px;">
+                <div class="fb-banner__icon">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                 </div>
-                <span class="fb-badge">✅ Connected</span>
+                <div>
+                    <div class="fb-banner__title">{{ $fb['pageInfo']['name'] ?? 'Facebook Page' }}</div>
+                    <div class="fb-banner__sub">
+                        Likes: <strong>{{ number_format($fb['pageInfo']['fan_count'] ?? 0) }}</strong> &nbsp;·&nbsp;
+                        Followers: <strong>{{ number_format($fb['pageInfo']['followers_count'] ?? 0) }}</strong>
+                    </div>
+                    <span class="fb-badge">✅ Connected</span>
+                </div>
+            </div>
+
+            {{-- Period Selector --}}
+            <div style="display:flex;flex-direction:column;justify-content:center;gap:8px;">
+                <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink-faint);">Time Period</div>
+                <div class="fb-period-group">
+                    @foreach($fb['periods'] as $pKey => $pCfg)
+                    <a href="{{ route('admin.analytics', ['period' => $pKey]) }}"
+                       class="fb-period-btn {{ ($fb['period'] ?? '7d') === $pKey ? 'active' : '' }}">
+                        {{ $pCfg['label'] }}
+                    </a>
+                    @endforeach
+                </div>
             </div>
         </div>
 
+        @php $ps = $fb['period_short'] ?? '7d'; @endphp
+
         @if(!empty($fb['metrics']))
-        <div class="fb-cards">
+        <div class="fb-cards" style="grid-template-columns:repeat(3,1fr);">
             @php
             $fb_metric_items = [
-                ['key'=>'total_likes',    'label'=>'Total Likes',    'c'=>'#1877f2','bg'=>'#dbeafe','path'=>'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'],
-                ['key'=>'total_comments', 'label'=>'Total Comments', 'c'=>'#10b981','bg'=>'#d1fae5','path'=>'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],
-                ['key'=>'total_shares',   'label'=>'Total Shares',   'c'=>'#8b5cf6','bg'=>'#ede9fe','path'=>'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'],
-                ['key'=>'total_posts',    'label'=>'Posts Fetched',  'c'=>'#f59e0b','bg'=>'#fef3c7','path'=>'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>'],
+                ['key'=>'total_reach',      'label'=>"Reach ({$ps})",       'c'=>'#1877f2','bg'=>'#dbeafe','path'=>'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'],
+                ['key'=>'total_engagement', 'label'=>"Engagements ({$ps})", 'c'=>'#e1306c','bg'=>'#fce7f3','path'=>'<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>'],
+                ['key'=>'total_likes',      'label'=>"Likes ({$ps})",       'c'=>'#f59e0b','bg'=>'#fef3c7','path'=>'<circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>'],
+                ['key'=>'total_comments',   'label'=>"Comments ({$ps})",    'c'=>'#10b981','bg'=>'#d1fae5','path'=>'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'],
+                ['key'=>'total_shares',     'label'=>"Shares ({$ps})",      'c'=>'#8b5cf6','bg'=>'#ede9fe','path'=>'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>'],
+                ['key'=>'total_posts',      'label'=>"Posts ({$ps})",        'c'=>'#0ea5e9','bg'=>'#e0f2fe','path'=>'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>'],
             ];
             @endphp
             @foreach($fb_metric_items as $fi)
@@ -457,13 +492,25 @@
             </div>
             @endforeach
         </div>
+
+        {{-- Reach & Engagement Chart --}}
+        @if(!empty($fb['metrics']['total_reach']['daily']))
+        <div class="panel-a">
+            <div class="pa-head">
+                <div><div class="pa-title">Daily Reach & Engagement</div><div class="pa-sub">Page impressions vs post engagements — last {{ $fb['period_label'] ?? '7 Days' }}</div></div>
+            </div>
+            <div class="pa-body">
+                <div class="chart-wrap"><canvas id="fbAnalyticsChart"></canvas></div>
+            </div>
+        </div>
+        @endif
         @endif
 
         {{-- RECENT FB POSTS --}}
         @if(!empty($fb['posts']))
         <div class="panel-a">
             <div class="pa-head">
-                <div><div class="pa-title">Recent Facebook Posts</div><div class="pa-sub">Latest from your page</div></div>
+                <div><div class="pa-title">Recent Facebook Posts</div><div class="pa-sub">Posts from last {{ $fb['period_label'] ?? '7 Days' }}</div></div>
             </div>
             <div style="overflow-x:auto;">
                 <table class="rtable">
@@ -568,4 +615,39 @@ new Chart(ctx,{
     }
 });
 </script>
+@if(isset($fb) && empty($fb['error']) && !empty($fb['metrics']['total_reach']['daily']))
+<script>
+const fbACtx = document.getElementById('fbAnalyticsChart');
+if (fbACtx) {
+    const fbLabels = @json(array_map(function($d) { return \Carbon\Carbon::parse($d['date'])->format('M j'); }, $fb['metrics']['total_reach']['daily']));
+    const fbReach  = @json(array_column($fb['metrics']['total_reach']['daily'], 'value'));
+    const fbEng    = @json(array_column($fb['metrics']['total_engagement']['daily'], 'value'));
+    const ctx2 = fbACtx.getContext('2d');
+    const gR = ctx2.createLinearGradient(0,0,0,240); gR.addColorStop(0,'rgba(24,119,242,0.15)'); gR.addColorStop(1,'rgba(24,119,242,0)');
+    const gE = ctx2.createLinearGradient(0,0,0,240); gE.addColorStop(0,'rgba(225,48,108,0.15)'); gE.addColorStop(1,'rgba(225,48,108,0)');
+    new Chart(ctx2, {
+        type:'line',
+        data:{
+            labels: fbLabels,
+            datasets:[
+                {label:'Impressions',data:fbReach,borderColor:'#1877f2',backgroundColor:gR,borderWidth:2.5,pointBackgroundColor:'#1877f2',pointRadius:4,tension:0.4,fill:true},
+                {label:'Engagements',data:fbEng,borderColor:'#e1306c',backgroundColor:gE,borderWidth:2.5,pointBackgroundColor:'#e1306c',pointRadius:4,tension:0.4,fill:true}
+            ]
+        },
+        options:{
+            responsive:true,maintainAspectRatio:false,
+            interaction:{mode:'index',intersect:false},
+            plugins:{
+                legend:{position:'top',align:'end',labels:{font:{family:'DM Sans',size:12,weight:'600'},color:'#7a7672',usePointStyle:true,pointStyleWidth:8,boxHeight:8,padding:20}},
+                tooltip:{backgroundColor:'#1a1a1a',titleFont:{family:'DM Sans',size:12,weight:'700'},bodyFont:{family:'DM Sans',size:12},padding:12,cornerRadius:10}
+            },
+            scales:{
+                x:{grid:{display:false},ticks:{font:{family:'DM Sans',size:12},color:'#b5b0a8'}},
+                y:{beginAtZero:true,grid:{color:'#e8e3da'},ticks:{font:{family:'DM Sans',size:12},color:'#b5b0a8'}}
+            }
+        }
+    });
+}
+</script>
+@endif
 @endsection

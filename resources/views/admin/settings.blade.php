@@ -10,7 +10,7 @@
 .settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 22px; align-items: start; }
 
 /* SIDENAV */
-.settings-nav { background: var(--card); border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow-sm); overflow: hidden; position: sticky; top: calc(var(--topbar-h) + 20px); }
+.settings-nav { background: var(--card); border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow-sm); overflow: hidden; position: sticky; top: 0; }
 .settings-nav__item {
     display: flex; align-items: center; gap: 10px;
     padding: 13px 18px; font-size: 13.5px; font-weight: 500;
@@ -84,19 +84,19 @@
 
     {{-- SIDENAV --}}
     <div class="settings-nav">
-        <button class="settings-nav__item active" onclick="scrollTo(event,'account')">
+        <button class="settings-nav__item active" onclick="navScrollTo(event,'account')">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Account
         </button>
-        <button class="settings-nav__item" onclick="scrollTo(event,'security')">
+        <button class="settings-nav__item" onclick="navScrollTo(event,'security')">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
             Security
         </button>
-        <button class="settings-nav__item" onclick="scrollTo(event,'notifications')">
+        <button class="settings-nav__item" onclick="navScrollTo(event,'notifications')">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             Notifications
         </button>
-        <button class="settings-nav__item" onclick="scrollTo(event,'system')">
+        <button class="settings-nav__item" onclick="navScrollTo(event,'system')">
             <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             System Info
         </button>
@@ -220,9 +220,14 @@
 
 @section('scripts')
 <script>
-function scrollTo(e, id){
+function navScrollTo(e, id){
     e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    const section = document.getElementById(id);
+    const scroller = document.querySelector('.page-content');
+    if(section && scroller){
+        const offset = section.offsetTop - scroller.offsetTop - 16;
+        scroller.scrollTo({ top: offset, behavior: 'smooth' });
+    }
     document.querySelectorAll('.settings-nav__item').forEach(el => el.classList.remove('active'));
     e.currentTarget.classList.add('active');
 }

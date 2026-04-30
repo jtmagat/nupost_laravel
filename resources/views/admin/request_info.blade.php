@@ -322,7 +322,7 @@
         </div>
         <form method="POST" action="{{ route('admin.requests.status') }}" class="hero-status-form"
               style="display:flex;align-items:center;gap:8px;flex-shrink:0;position:relative;z-index:2;"
-              onsubmit="return confirm('Update status?')">
+              onsubmit="confirmHeroStatus(event, this)">
             @csrf
             <input type="hidden" name="request_id" value="{{ $request->id }}">
             <input type="hidden" name="redirect_to" value="{{ route('admin.requests.show', $request->id) }}">
@@ -878,5 +878,30 @@ function showToast(msg, type='success') {
 }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 setTimeout(() => document.getElementById('toast')?.remove(), 3000);
+
+function confirmHeroStatus(e, f) {
+    e.preventDefault();
+    const status = f.querySelector('select[name="status"]').value;
+    
+    Swal.fire({
+        title: 'Update Status?',
+        html: `Are you sure you want to change the status to <strong>${status}</strong>?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#002366',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, update it',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            popup: 'rounded-xl',
+            confirmButton: 'rounded-lg px-4 py-2 font-semibold',
+            cancelButton: 'rounded-lg px-4 py-2 font-semibold'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            f.submit();
+        }
+    });
+}
 </script>
 @endsection

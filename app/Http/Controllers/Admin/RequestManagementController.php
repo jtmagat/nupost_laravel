@@ -105,6 +105,12 @@ class RequestManagementController extends Controller
         }
 
         $old_status = $req->status;
+
+        // Don't update if status hasn't changed
+        if ($old_status === $new_status && !$note) {
+            return back()->with('error', 'Status is already set to ' . $new_status . '.');
+        }
+
         $req->update(['status' => $new_status]);
 
         RequestActivity::create([
@@ -117,7 +123,7 @@ class RequestManagementController extends Controller
             RequestActivity::create([
                 'request_id' => $id,
                 'actor'      => 'admin@nupost.com',
-                'action'     => "Internal note: $note",
+                'action'     => "Admin note: $note",
             ]);
         }
 
@@ -132,7 +138,8 @@ class RequestManagementController extends Controller
                 'is_read' => false,
             ]);
 
-            if ($user->email_notif && $user->status_updates) {
+            // Always send email on admin-initiated status change
+            if ($user->email) {
                 try {
                     $html = $this->getStatusEmailHtml($user->name, $req->title, $new_status, $note);
                     Mail::send([], [], function ($message) use ($user, $new_status, $html) {
@@ -140,6 +147,7 @@ class RequestManagementController extends Controller
                             ->subject("NUPost: Your request has been $new_status")
                             ->html($html);
                     });
+                    Log::info("[NUPost] Status email sent to {$user->email} — {$req->title} → {$new_status}");
                 } catch (\Exception $e) {
                     Log::error('[NUPost] Status email failed: ' . $e->getMessage());
                 }
@@ -255,6 +263,21 @@ class RequestManagementController extends Controller
                 'type'    => 'comment',
                 'is_read' => false,
             ]);
+
+            // Send email notification for admin comment
+            if ($user->email) {
+                try {
+                    $html = $this->getCommentEmailHtml($user->name, $req->title, $message);
+                    Mail::send([], [], function ($msg) use ($user, $req, $html) {
+                        $msg->to($user->email, $user->name)
+                            ->subject("NUPost: New comment on \"{$req->title}\"")
+                            ->html($html);
+                    });
+                    Log::info("[NUPost] Comment email sent to {$user->email} — {$req->title}");
+                } catch (\Exception $e) {
+                    Log::error('[NUPost] Comment email failed: ' . $e->getMessage());
+                }
+            }
         }
 
         return response()->json(['success' => true, 'message' => 'Comment posted.']);
@@ -350,6 +373,37 @@ class RequestManagementController extends Controller
                 <span style='display:inline-block;background:$color;color:white;padding:10px 28px;border-radius:20px;font-size:15px;font-weight:700;'>$status</span>
             </div>
             $note_section
+        </td></tr>
+        <tr><td style='background:#f5f6fa;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;'>
+            <p style='font-size:12px;color:#9ca3af;margin:0;'>© " . date('Y') . " NUPost — NU Lipa</p>
+        </td></tr>
+        </table></td></tr></table></body></html>";
+    }
+
+    private function getCommentEmailHtml(string $name, string $title, string $comment): string
+    {
+        $escapedComment = htmlspecialchars($comment, ENT_QUOTES, 'UTF-8');
+
+        return "<!DOCTYPE html><html><body style='margin:0;padding:0;background:#f5f6fa;font-family:Arial,sans-serif;'>
+        <table width='100%' cellpadding='0' cellspacing='0' style='background:#f5f6fa;padding:40px 0;'>
+        <tr><td align='center'>
+        <table width='520' cellpadding='0' cellspacing='0' style='background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);'>
+        <tr><td style='background:#002366;padding:28px 40px;text-align:center;'>
+            <div style='font-size:22px;font-weight:700;color:white;'>NUPost</div>
+            <div style='font-size:13px;color:rgba(255,255,255,0.7);margin-top:4px;'>NU Lipa Social Media Request System</div>
+        </td></tr>
+        <tr><td style='padding:32px 40px;'>
+            <p style='font-size:14px;color:#374151;margin:0 0 16px;'>Hi <strong>$name</strong>,</p>
+            <p style='font-size:14px;color:#374151;margin:0 0 20px;'>The admin has posted a new comment on your request:</p>
+            <div style='background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px 20px;margin-bottom:16px;'>
+                <div style='font-size:13px;color:#6b7280;margin-bottom:4px;'>Request</div>
+                <div style='font-size:15px;font-weight:600;color:#111827;'>$title</div>
+            </div>
+            <div style='background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:16px 20px;margin-bottom:16px;'>
+                <div style='font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;'>💬 Admin Comment</div>
+                <div style='font-size:14px;color:#1e3a5f;line-height:1.6;'>$escapedComment</div>
+            </div>
+            <p style='font-size:13px;color:#6b7280;margin:0;'>Log in to NUPost to view and reply to this comment.</p>
         </td></tr>
         <tr><td style='background:#f5f6fa;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb;'>
             <p style='font-size:12px;color:#9ca3af;margin:0;'>© " . date('Y') . " NUPost — NU Lipa</p>

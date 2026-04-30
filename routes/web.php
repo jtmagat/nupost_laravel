@@ -42,6 +42,7 @@ Route::middleware('guest.nupost')->group(function () {
     Route::get('/verify',        [OtpController::class, 'index'])->name('otp.index');
     Route::post('/verify',       [OtpController::class, 'store'])->name('otp.store');
     Route::get('/verify/resend', [OtpController::class, 'resend'])->name('otp.resend');
+    Route::get('/verify/{email}/{token}', [OtpController::class, 'verifyLink'])->name('verify.link');
 
     // Password Recovery
     Route::get('/forgot-password',         [ForgotPasswordController::class, 'index'])->name('password.forgot');

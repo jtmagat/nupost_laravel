@@ -51,11 +51,9 @@ class RegisterController extends Controller
             'is_verified' => false,
         ]);
 
-        // Generate OTP
         $otp        = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $expires_at = now()->addMinutes(10);
 
-        OtpCode::where('email', $email)->delete();
         OtpCode::create([
             'user_id'    => $user->id,
             'email'      => $email,

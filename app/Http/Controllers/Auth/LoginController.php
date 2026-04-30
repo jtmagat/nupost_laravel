@@ -43,29 +43,37 @@ class LoginController extends Controller
             if (!$user->is_verified) {
                 LoginAttempt::create(['email' => $email, 'ip_address' => $request->ip(), 'success' => false, 'attempted_at' => now()]);
 
-                // Auto resend OTP link
-                $otp        = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-                $expires_at = now()->addMinutes(10);
+                // Check if a valid OTP already exists
+                $existingOtp = \App\Models\OtpCode::where('user_id', $user->id)
+                    ->where('is_used', false)
+                    ->where('expires_at', '>', now())
+                    ->first();
 
-                \App\Models\OtpCode::where('user_id', $user->id)->delete();
-                \App\Models\OtpCode::create([
-                    'user_id'    => $user->id,
-                    'email'      => $user->email,
-                    'otp_code'   => $otp,
-                    'expires_at' => $expires_at,
-                ]);
+                if (!$existingOtp) {
+                    $otp        = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+                    $expires_at = now()->addMinutes(10);
 
-                try {
-                    \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $otp) {
-                        $message->to($user->email, $user->name)
-                            ->subject('Your NUPost Verification Link')
-                            ->html(\App\Http\Controllers\Auth\OtpController::getOtpEmailHtml($user->name, $otp, $user->email));
-                    });
-                } catch (\Exception $e) {
-                    \Log::error('[NUPost] Login auto-resend OTP failed: ' . $e->getMessage());
+                    \App\Models\OtpCode::create([
+                        'user_id'    => $user->id,
+                        'email'      => $user->email,
+                        'otp_code'   => $otp,
+                        'expires_at' => $expires_at,
+                    ]);
+
+                    try {
+                        \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($user, $otp) {
+                            $message->to($user->email, $user->name)
+                                ->subject('Your NUPost Verification Link')
+                                ->html(\App\Http\Controllers\Auth\OtpController::getOtpEmailHtml($user->name, $otp, $user->email));
+                        });
+                    } catch (\Exception $e) {
+                        \Log::error('[NUPost] Login auto-resend OTP failed: ' . $e->getMessage());
+                    }
+
+                    return back()->withInput()->with('error', 'Please verify your email first. A new verification link has been sent to your inbox.');
                 }
 
-                return back()->withInput()->with('error', 'Please verify your email first. A new verification link has been sent to your inbox.');
+                return back()->withInput()->with('error', 'Please verify your email first. Check your inbox for the verification link.');
             }
 
             LoginAttempt::create(['email' => $email, 'ip_address' => $request->ip(), 'success' => true, 'attempted_at' => now()]);
