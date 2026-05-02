@@ -198,7 +198,7 @@ td { padding: 12px 16px; font-size: 12.5px; vertical-align: middle; }
                 <tr>
                     <th>#</th>
                     <th>Title</th>
-                    <th>Requester</th>
+                    <th>Requestor</th>
                     <th>Category</th>
                     <th>Priority</th>
                     <th>Status</th>

@@ -397,7 +397,7 @@ body { background: var(--cream) !important; }
         <div class="hero-card__glow2"></div>
         <div>
             <div class="hero-card__greeting">NUPost Admin Panel</div>
-            <div class="hero-card__title">Welcome Back,<br>Administrator</div>
+            <div class="hero-card__title">Welcome Back,<br>{{ session('admin_name', 'Administrator') }}</div>
         </div>
         <div class="hero-card__bottom">
             <div class="hero-stat">

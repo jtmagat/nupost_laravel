@@ -165,7 +165,7 @@
                 </div>
                 <div>
                     <div class="profile-hero-name">{{ $user->name }}</div>
-                    <div class="profile-hero-role">Requester</div>
+                    <div class="profile-hero-role">Requestor</div>
                 </div>
             </div>
             <a href="{{ route('requestor.profile.edit') }}" class="profile-hero__edit">

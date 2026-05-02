@@ -502,7 +502,7 @@
     <div style="overflow-x:auto;">
         <table class="rtable">
             <thead>
-                <tr><th>Request</th><th>Requester</th><th>Category</th><th>Platforms</th><th>Status</th><th>Date</th></tr>
+                <tr><th>Request</th><th>Requestor</th><th>Category</th><th>Platforms</th><th>Status</th><th>Date</th></tr>
             </thead>
             <tbody>
             @forelse($recent_posted as $req)

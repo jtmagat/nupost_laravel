@@ -46,7 +46,7 @@ class ReportsController extends Controller
             // BOM for Excel
             fputs($handle, "\xEF\xBB\xBF");
             // Header row
-            fputcsv($handle, ['ID','Request ID','Title','Requester','Category','Priority','Status','Platforms','Preferred Date','Caption','Submitted']);
+            fputcsv($handle, ['ID','Request ID','Title','Requestor','Category','Priority','Status','Platforms','Preferred Date','Caption','Submitted']);
             foreach ($requests as $req) {
                 $plats = implode(', ', $req->platforms_array ?? []);
                 fputcsv($handle, [

@@ -183,7 +183,7 @@ td { padding:13px 16px; font-size:12.5px; vertical-align:middle; }
 <form method="GET" action="{{ route('admin.requests') }}" class="toolbar" id="filter-form">
     <div class="search-wrap">
         <span class="search-icon"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
-        <input type="text" name="search" id="search-input" placeholder="Search title, requester, category..." value="{{ $search }}" autocomplete="off">
+        <input type="text" name="search" id="search-input" placeholder="Search title, requestor, category..." value="{{ $search }}" autocomplete="off">
         <span class="search-spinner" id="search-spinner">
             <svg width="15" height="15" fill="none" stroke="var(--navy)" stroke-width="2" viewBox="0 0 24 24" style="animation:spin .7s linear infinite;">
                 <path d="M21 12a9 9 0 1 1-6.22-8.56"/>
@@ -236,7 +236,7 @@ td { padding:13px 16px; font-size:12.5px; vertical-align:middle; }
             <thead>
                 <tr>
                     <th>Request</th>
-                    <th>Requester</th>
+                    <th>Requestor</th>
                     <th>Category</th>
                     <th>Priority</th>
                     <th>Status</th>
